@@ -12,6 +12,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
+      - name: Build packages
+        run: bun run --cwd packages/ui build
       - name: Codegen
         run: bun run codegen
         working-directory: apps/web
