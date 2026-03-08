@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.output/
+.vercel/
+*.local
+.env*
+!.env.example
+.turbo/
+coverage/
+playwright-report/
+test-results/
+apps/web/src/routeTree.gen.ts
+apps/web/src/paraglide/
