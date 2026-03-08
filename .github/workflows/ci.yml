@@ -12,6 +12,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
+      - name: Codegen
+        run: bun run codegen
+        working-directory: apps/web
       - name: Lint
         run: bun lint
       - name: Typecheck
