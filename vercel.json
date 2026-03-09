@@ -1,0 +1,9 @@
+{
+  "buildCommand": "bun run build && mv apps/web/.vercel/output .vercel/output",
+  "installCommand": "bun install",
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  }
+}

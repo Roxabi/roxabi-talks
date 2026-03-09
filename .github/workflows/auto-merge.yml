@@ -7,7 +7,7 @@
 name: Auto Merge
 
 on:
-  pull_request:
+  pull_request_target:
     types: [labeled, synchronize, closed]
   check_suite:
     types: [completed]
@@ -65,7 +65,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Close issues referenced with closing keywords
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const body = context.payload.pull_request.body || '';

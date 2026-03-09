@@ -1,5 +1,6 @@
 import { cn, PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate, useSearch } from '@tanstack/react-router'
+import { ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import {
@@ -211,14 +212,30 @@ function LyraStoryContent() {
 
   return (
     <div data-presentation data-mode={mode} className="relative bg-background text-foreground">
-      {/* Roxabi wordmark */}
-      <div className="fixed left-6 top-6 z-50">
-        <Link
-          to="/"
-          className="text-sm font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
-        >
-          Roxabi
-        </Link>
+      {/* Breadcrumb */}
+      <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/"
+            className="text-xs font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
+          >
+            Roxabi
+          </Link>
+          <ChevronRight className="size-3 text-muted-foreground/40" aria-hidden="true" />
+          <Link
+            to="/talks"
+            className="text-xs font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
+          >
+            {m.talk_index_title()}
+          </Link>
+          <ChevronRight className="size-3 text-muted-foreground/40" aria-hidden="true" />
+          <span className="text-xs font-bold tracking-wider text-muted-foreground/50 uppercase truncate max-w-[160px]">
+            {m.talk_index_lyrastory_title()}
+          </span>
+        </div>
+        <p className="text-[10px] text-muted-foreground/40 truncate max-w-[260px]">
+          {sections[currentSectionIndex]?.label}
+        </p>
       </div>
 
       {/* Locale switcher + Theme toggle + Mode toggle */}

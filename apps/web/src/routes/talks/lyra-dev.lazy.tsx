@@ -1,5 +1,6 @@
 import { cn, PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate, useSearch } from '@tanstack/react-router'
+import { ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import {
@@ -142,18 +143,34 @@ export function LyraDevPresentation() {
       data-mode="mmorpg"
       className="relative bg-[#060d08] text-foreground min-h-dvh"
     >
-      {/* Roxabi wordmark */}
-      <div className="fixed left-6 top-6 z-50">
-        <Link
-          to="/"
-          className="font-mono text-xs font-bold tracking-wider text-emerald-400/50 hover:text-emerald-400 transition-colors uppercase"
-        >
-          Roxabi
-        </Link>
+      {/* Breadcrumb */}
+      <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/"
+            className="font-mono text-xs font-bold tracking-wider text-emerald-400/50 hover:text-emerald-400 transition-colors uppercase"
+          >
+            Roxabi
+          </Link>
+          <ChevronRight className="size-3 text-emerald-400/30" aria-hidden="true" />
+          <Link
+            to="/talks"
+            className="font-mono text-xs font-bold tracking-wider text-emerald-400/50 hover:text-emerald-400 transition-colors uppercase"
+          >
+            {m.talk_index_title()}
+          </Link>
+          <ChevronRight className="size-3 text-emerald-400/30" aria-hidden="true" />
+          <span className="font-mono text-xs font-bold tracking-wider text-emerald-400/30 uppercase truncate max-w-[160px]">
+            {m.talk_index_lyradev_title()}
+          </span>
+        </div>
+        <p className="font-mono text-[10px] text-emerald-400/30 truncate max-w-[260px]">
+          {sections[currentSectionIndex]?.label}
+        </p>
       </div>
 
       {/* Controls */}
-      <div className="fixed right-6 top-6 z-50 flex items-center gap-2">
+      <div className="fixed right-6 top-6 z-50 flex items-center gap-2 text-emerald-400/60 [&_button]:hover:text-emerald-400 [&_button]:hover:bg-emerald-400/10">
         <LocaleSwitcher />
         <ThemeToggle />
       </div>
@@ -167,7 +184,12 @@ export function LyraDevPresentation() {
 
       {/* Lyra avatar companion — hidden on mobile */}
       <div className={cn('fixed z-40 hidden md:block group', POSITION_CLASSES[avatarPos])}>
-        <LyraCompanion stage={currentSectionIndex} variant={avatar} size={avatarSize} />
+        <LyraCompanion
+          stage={currentSectionIndex}
+          variant={avatar}
+          size={avatarSize}
+          rpgColors={{ primary: '#10b981', secondary: '#f59e0b', hair: '#6ee7b7', dark: '#0d2b1a' }}
+        />
 
         {/* Hover-reveal controls */}
         <div className="mt-1 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
@@ -219,7 +241,7 @@ export function LyraDevPresentation() {
         ref={scrollContainerRef}
         className="md:h-dvh md:overflow-y-auto md:snap-y md:snap-mandatory"
       >
-        <SectionContainer id="title" className="relative">
+        <SectionContainer id="title" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(16,185,129,0.08)_0%,transparent_100%)]">
           <SectionChrome sectionId="title" />
           <TitleSection />
         </SectionContainer>
