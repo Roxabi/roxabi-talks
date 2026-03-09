@@ -17,7 +17,7 @@ import { LyraIn4DaysSection } from '@/components/presentation/lyra-product/LyraI
 import { LyraNotSoleneSection } from '@/components/presentation/lyra-product/LyraNotSoleneSection'
 import { PatchNotesSection } from '@/components/presentation/lyra-product/PatchNotesSection'
 import { PivotSpeedSection } from '@/components/presentation/lyra-product/PivotSpeedSection'
-import { PRODUCT_SECTION_IDS } from '@/components/presentation/lyra-product/productConfig'
+import { colorMap, PRODUCT_SECTION_IDS, productSections } from '@/components/presentation/lyra-product/productConfig'
 import { SectionChrome } from '@/components/presentation/lyra-product/SectionChrome'
 import { SharedFoundationSection } from '@/components/presentation/lyra-product/SharedFoundationSection'
 import { TelegramSection } from '@/components/presentation/lyra-product/TelegramSection'
@@ -144,7 +144,7 @@ export function LyraProductPresentation() {
       className="relative bg-[#0d0a07] text-foreground min-h-dvh"
     >
       {/* Breadcrumb */}
-      <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
+      <div className="fixed left-6 top-6 z-50 flex flex-col gap-1">
         <div className="flex items-center gap-1.5">
           <a
             href={import.meta.env.VITE_APP_URL ?? '/'}
@@ -160,6 +160,17 @@ export function LyraProductPresentation() {
             {m.talk_index_title()}
           </Link>
         </div>
+        {(() => {
+          const id = (sectionIds[currentSectionIndex] ?? '') as keyof typeof productSections
+          const section = productSections[id]
+          if (!section) return null
+          const colors = colorMap[section.color]
+          return (
+            <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', colors.text)}>
+              {section.phase}
+            </span>
+          )
+        })()}
       </div>
 
       {/* Controls */}
@@ -319,7 +330,7 @@ export function LyraProductPresentation() {
           <TheLessonSection />
         </SectionContainer>
 
-        <SectionContainer id="closing" className="relative">
+        <SectionContainer id="closing" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(245,158,11,0.08)_0%,transparent_100%)]">
           <SectionChrome sectionId="closing" />
           <ClosingSection />
         </SectionContainer>
