@@ -1,14 +1,9 @@
 import { cn, PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
-import {
-  ChipButton,
-  KEYBOARD_HINTS,
-  POSITION_CLASSES,
-  VARIANT_LABELS,
-} from '@/components/presentation/AvatarControls'
+import { AvatarControlsPanel } from '@/components/presentation/AvatarControlsPanel'
 import { ClosingSection } from '@/components/presentation/lyra-product/ClosingSection'
 import { IndustrialTurnSection } from '@/components/presentation/lyra-product/IndustrialTurnSection'
 import { KillDarlingsSection } from '@/components/presentation/lyra-product/KillDarlingsSection'
@@ -18,6 +13,8 @@ import { LyraNotSoleneSection } from '@/components/presentation/lyra-product/Lyr
 import { PatchNotesSection } from '@/components/presentation/lyra-product/PatchNotesSection'
 import { PivotSpeedSection } from '@/components/presentation/lyra-product/PivotSpeedSection'
 import { colorMap, PRODUCT_SECTION_IDS, productSections } from '@/components/presentation/lyra-product/productConfig'
+import { useAvatarKeyboardControls } from '@/hooks/useAvatarKeyboardControls'
+import { useSectionTracking } from '@/hooks/useSectionTracking'
 import { SectionChrome } from '@/components/presentation/lyra-product/SectionChrome'
 import { SharedFoundationSection } from '@/components/presentation/lyra-product/SharedFoundationSection'
 import { TelegramSection } from '@/components/presentation/lyra-product/TelegramSection'
@@ -34,9 +31,6 @@ import { SectionContainer } from '@/components/presentation/SectionContainer'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { m } from '@/paraglide/messages'
 import {
-  AVATAR_POSITIONS,
-  AVATAR_SIZES,
-  AVATAR_VARIANTS,
   type AvatarPosition,
   type AvatarVariant,
 } from '@/routes/talks/lyra-product'
@@ -48,26 +42,29 @@ export const Route = createLazyFileRoute('/talks/lyra-product')({
 const sectionIds = PRODUCT_SECTION_IDS
 
 export function LyraProductPresentation() {
-  const sections = [
-    { id: 'title', label: m.talk_lp_nav_title() },
-    { id: 'wrong-bet', label: m.talk_lp_nav_wrong_bet() },
-    { id: 'pivot-speed', label: m.talk_lp_nav_pivot() },
-    { id: 'kill-darlings', label: m.talk_lp_nav_kill() },
-    { id: 'shared-foundation', label: m.talk_lp_nav_foundation() },
-    { id: 'knowledge-radar', label: m.talk_lp_nav_radar() },
-    { id: 'telegram-anywhere', label: m.talk_lp_nav_telegram() },
-    { id: 'industrial-turn', label: m.talk_lp_nav_process() },
-    { id: 'patch-notes', label: m.talk_lp_nav_changelog() },
-    { id: 'the-day', label: m.talk_lp_nav_explosion() },
-    { id: 'voice', label: m.talk_lp_nav_voice() },
-    { id: 'the-night', label: m.talk_lp_nav_night() },
-    { id: 'lyra-not-solene', label: m.talk_lp_nav_identity() },
-    { id: 'the-ecosystem', label: m.talk_lp_nav_ecosystem() },
-    { id: 'the-numbers', label: m.talk_lp_nav_numbers() },
-    { id: 'lyra-in-4-days', label: m.talk_lp_nav_four_days() },
-    { id: 'the-lesson', label: m.talk_lp_nav_lesson() },
-    { id: 'closing', label: m.talk_lp_nav_closing() },
-  ]
+  const sections = useMemo(
+    () => [
+      { id: 'title', label: m.talk_lp_nav_title() },
+      { id: 'wrong-bet', label: m.talk_lp_nav_wrong_bet() },
+      { id: 'pivot-speed', label: m.talk_lp_nav_pivot() },
+      { id: 'kill-darlings', label: m.talk_lp_nav_kill() },
+      { id: 'shared-foundation', label: m.talk_lp_nav_foundation() },
+      { id: 'knowledge-radar', label: m.talk_lp_nav_radar() },
+      { id: 'telegram-anywhere', label: m.talk_lp_nav_telegram() },
+      { id: 'industrial-turn', label: m.talk_lp_nav_process() },
+      { id: 'patch-notes', label: m.talk_lp_nav_changelog() },
+      { id: 'the-day', label: m.talk_lp_nav_explosion() },
+      { id: 'voice', label: m.talk_lp_nav_voice() },
+      { id: 'the-night', label: m.talk_lp_nav_night() },
+      { id: 'lyra-not-solene', label: m.talk_lp_nav_identity() },
+      { id: 'the-ecosystem', label: m.talk_lp_nav_ecosystem() },
+      { id: 'the-numbers', label: m.talk_lp_nav_numbers() },
+      { id: 'lyra-in-4-days', label: m.talk_lp_nav_four_days() },
+      { id: 'the-lesson', label: m.talk_lp_nav_lesson() },
+      { id: 'closing', label: m.talk_lp_nav_closing() },
+    ],
+    []
+  )
   const navigate = useNavigate()
   const handleEscape = useCallback(() => navigate({ to: '/talks' }), [navigate])
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -95,47 +92,11 @@ export function LyraProductPresentation() {
     [navigate]
   )
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      const { avatar: av, avatarSize: sz, avatarPos: pos } = avatarParamsRef.current
-      if (e.key === 'v' || e.key === 'V') {
-        const idx = AVATAR_VARIANTS.indexOf(av)
-        setAvatarParam({ avatar: AVATAR_VARIANTS[(idx + 1) % AVATAR_VARIANTS.length] })
-      } else if (e.key === ']') {
-        const idx = AVATAR_SIZES.indexOf(sz as (typeof AVATAR_SIZES)[number])
-        setAvatarParam({ avatarSize: AVATAR_SIZES[Math.min(idx + 1, AVATAR_SIZES.length - 1)] })
-      } else if (e.key === '[') {
-        const idx = AVATAR_SIZES.indexOf(sz as (typeof AVATAR_SIZES)[number])
-        setAvatarParam({ avatarSize: AVATAR_SIZES[Math.max(idx - 1, 0)] })
-      } else if (e.key === 'p' || e.key === 'P') {
-        const idx = AVATAR_POSITIONS.indexOf(pos)
-        setAvatarParam({ avatarPos: AVATAR_POSITIONS[(idx + 1) % AVATAR_POSITIONS.length] })
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [setAvatarParam])
+  useAvatarKeyboardControls(avatarParamsRef, setAvatarParam)
+  useSectionTracking(sectionIds, setCurrentSectionIndex, { root: scrollContainerRef.current })
 
-  useEffect(() => {
-    const callback: IntersectionObserverCallback = (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const index = sectionIds.indexOf(entry.target.id)
-          if (index !== -1) setCurrentSectionIndex(index)
-        }
-      }
-    }
-    const observer = new IntersectionObserver(callback, {
-      threshold: 0.5,
-      root: scrollContainerRef.current,
-    })
-    for (const id of sectionIds) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    }
-    return () => observer.disconnect()
-  }, [])
+  const currentSection = productSections[(sectionIds[currentSectionIndex] ?? '') as keyof typeof productSections]
+  const currentSectionColors = currentSection ? colorMap[currentSection.color] : null
 
   return (
     <div
@@ -160,17 +121,11 @@ export function LyraProductPresentation() {
             {m.talk_index_title()}
           </Link>
         </div>
-        {(() => {
-          const id = (sectionIds[currentSectionIndex] ?? '') as keyof typeof productSections
-          const section = productSections[id]
-          if (!section) return null
-          const colors = colorMap[section.color]
-          return (
-            <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', colors.text)}>
-              {section.phase}
-            </span>
-          )
-        })()}
+        {currentSection && currentSectionColors && (
+          <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', currentSectionColors.text)}>
+            {currentSection.phase}
+          </span>
+        )}
       </div>
 
       {/* Controls */}
@@ -187,50 +142,19 @@ export function LyraProductPresentation() {
       </div>
 
       {/* Lyra avatar companion — hidden on mobile */}
-      <div className={cn('fixed z-40 hidden md:block group', POSITION_CLASSES[avatarPos])}>
+      <AvatarControlsPanel
+        avatar={avatar}
+        avatarSize={avatarSize}
+        avatarPos={avatarPos}
+        setAvatarParam={setAvatarParam}
+      >
         <LyraCompanion
           stage={currentSectionIndex}
           variant={avatar}
           size={avatarSize}
           pokemonColors={{ primary: '#f59e0b', secondary: '#ea580c', light: '#fde68a', dark: '#78350f' }}
         />
-
-        {/* Hover-reveal controls */}
-        <div className="mt-1 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200">
-          <div className="flex items-center gap-1 rounded-lg bg-black/60 backdrop-blur-sm px-2 py-1">
-            {AVATAR_VARIANTS.map((v) => (
-              <ChipButton
-                key={v}
-                active={avatar === v}
-                onClick={() => setAvatarParam({ avatar: v })}
-                title={v}
-                aria-label={m.talk_avatar_switch_variant()}
-              >
-                {VARIANT_LABELS[v]}
-              </ChipButton>
-            ))}
-          </div>
-          <div className="flex items-center gap-1 rounded-lg bg-black/60 backdrop-blur-sm px-2 py-1">
-            {AVATAR_SIZES.map((s) => (
-              <ChipButton
-                key={s}
-                active={avatarSize === s}
-                onClick={() => setAvatarParam({ avatarSize: s })}
-                aria-label={m.talk_avatar_set_size()}
-              >
-                {s}
-              </ChipButton>
-            ))}
-          </div>
-          <div className="flex items-center gap-2 rounded-lg bg-black/40 backdrop-blur-sm px-2 py-1">
-            {KEYBOARD_HINTS.map(({ key, label }) => (
-              <span key={key} className="text-[9px] font-mono text-white/30">
-                <span className="text-white/50">{key}</span> {label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      </AvatarControlsPanel>
 
       {/* Section navigation */}
       <PresentationNav

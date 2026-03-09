@@ -1,7 +1,7 @@
 import { PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { AgentTeamsSection } from '@/components/presentation/AgentTeamsSection'
 import { BuildingBlocksSection } from '@/components/presentation/BuildingBlocksSection'
@@ -15,6 +15,7 @@ import { SpecializationSection } from '@/components/presentation/SpecializationS
 import { ToolchainSection } from '@/components/presentation/ToolchainSection'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { m } from '@/paraglide/messages'
+import { useSectionTracking } from '@/hooks/useSectionTracking'
 
 export const Route = createLazyFileRoute('/talks/claude-code')({
   component: ClaudeCodePresentation,
@@ -38,22 +39,7 @@ export function ClaudeCodePresentation() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
 
-  useEffect(() => {
-    const callback: IntersectionObserverCallback = (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const index = SECTION_IDS.indexOf(entry.target.id)
-          if (index !== -1) setCurrentSectionIndex(index)
-        }
-      }
-    }
-    const observer = new IntersectionObserver(callback, { threshold: 0.5 })
-    for (const id of SECTION_IDS) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    }
-    return () => observer.disconnect()
-  }, [])
+  useSectionTracking(SECTION_IDS, setCurrentSectionIndex)
 
   const sections = useMemo(
     () => [
@@ -109,6 +95,7 @@ export function ClaudeCodePresentation() {
         sections={sections}
         onEscape={handleEscape}
         scrollContainerRef={scrollContainerRef}
+        syncHash
       />
 
       {/* Scroll-snap container — disabled on mobile */}

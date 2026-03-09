@@ -282,6 +282,34 @@ function QuantumVariant({
 
 // ─── Variant: Constellation ─────────────────────────────────────────────────
 
+const CONSTELLATION_STARS = [
+  { x: 50, y: 20 },
+  { x: 35, y: 40 },
+  { x: 65, y: 40 },
+  { x: 30, y: 55 },
+  { x: 70, y: 55 },
+  { x: 35, y: 70 },
+  { x: 65, y: 70 },
+  { x: 50, y: 50 },
+  { x: 20, y: 30 },
+  { x: 80, y: 30 },
+  { x: 45, y: 85 },
+  { x: 55, y: 85 },
+]
+
+const CONSTELLATION_LINES: [number, number][] = [
+  [0, 1],
+  [0, 2],
+  [1, 3],
+  [2, 4],
+  [3, 5],
+  [4, 6],
+  [5, 6],
+  [1, 7],
+  [2, 7],
+  [0, 7],
+]
+
 function ConstellationVariant({
   stage,
   size,
@@ -299,34 +327,6 @@ function ConstellationVariant({
   const starCount = Math.min(Math.floor(t * 12) + 1, 12)
   const lineCount = Math.max(0, Math.min(Math.floor(t * 10) - 1, 10))
 
-  const stars = [
-    { x: 50, y: 20 },
-    { x: 35, y: 40 },
-    { x: 65, y: 40 },
-    { x: 30, y: 55 },
-    { x: 70, y: 55 },
-    { x: 35, y: 70 },
-    { x: 65, y: 70 },
-    { x: 50, y: 50 },
-    { x: 20, y: 30 },
-    { x: 80, y: 30 },
-    { x: 45, y: 85 },
-    { x: 55, y: 85 },
-  ]
-
-  const lines: [number, number][] = [
-    [0, 1],
-    [0, 2],
-    [1, 3],
-    [2, 4],
-    [3, 5],
-    [4, 6],
-    [5, 6],
-    [1, 7],
-    [2, 7],
-    [0, 7],
-  ]
-
   return (
     <svg
       viewBox="0 0 100 100"
@@ -341,9 +341,9 @@ function ConstellationVariant({
         </filter>
       </defs>
 
-      {lines.slice(0, lineCount).map(([a, b], i) => {
-        const from = stars[a]!
-        const to = stars[b]!
+      {CONSTELLATION_LINES.slice(0, lineCount).map(([a, b], i) => {
+        const from = CONSTELLATION_STARS[a]!
+        const to = CONSTELLATION_STARS[b]!
         return (
           <line
             key={i}
@@ -359,7 +359,7 @@ function ConstellationVariant({
         )
       })}
 
-      {stars.slice(0, starCount).map((star, i) => {
+      {CONSTELLATION_STARS.slice(0, starCount).map((star, i) => {
         const isVega = i === 0
         const r = isVega ? lerp(1.5, 4, t) : lerp(0.5, 2, t)
         const fill = i % 3 === 0 ? '#ffffff' : i % 3 === 1 ? '#2D7FF9' : '#8B5CF6'

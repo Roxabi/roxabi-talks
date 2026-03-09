@@ -1,7 +1,7 @@
 import { PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { BigPictureSection } from '@/components/presentation/dev-process/BigPictureSection'
 import { BuildPhaseSection } from '@/components/presentation/dev-process/BuildPhaseSection'
@@ -27,6 +27,7 @@ import { WhatsNextSection } from '@/components/presentation/dev-process/WhatsNex
 import { SectionContainer } from '@/components/presentation/SectionContainer'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { m } from '@/paraglide/messages'
+import { useSectionTracking } from '@/hooks/useSectionTracking'
 
 export const Route = createLazyFileRoute('/talks/dev-process')({
   component: DevProcessPresentation,
@@ -62,24 +63,9 @@ export function DevProcessPresentation() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
 
-  useEffect(() => {
-    const callback: IntersectionObserverCallback = (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const index = SECTION_IDS.indexOf(entry.target.id)
-          if (index !== -1) setCurrentSectionIndex(index)
-        }
-      }
-    }
-    const observer = new IntersectionObserver(callback, { threshold: 0.5 })
-    for (const id of SECTION_IDS) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    }
-    return () => observer.disconnect()
-  }, [])
+  useSectionTracking(SECTION_IDS, setCurrentSectionIndex)
 
-  const sections = [
+  const sections = useMemo(() => [
     { id: 'intro', label: m.talk_dp_nav_intro() },
     { id: 'big-picture', label: m.talk_dp_nav_big_picture() },
     { id: 'tier-system', label: m.talk_dp_nav_tier_system() },
@@ -101,7 +87,7 @@ export function DevProcessPresentation() {
     { id: 'compressor', label: m.talk_dp_nav_compressor() },
     { id: 'whats-next', label: m.talk_dp_nav_whats_next() },
     { id: 'closing', label: m.talk_dp_nav_closing() },
-  ]
+  ], [])
 
   return (
     <div data-presentation className="relative bg-background text-foreground">

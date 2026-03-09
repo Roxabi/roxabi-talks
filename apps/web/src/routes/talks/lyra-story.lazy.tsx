@@ -1,14 +1,9 @@
-import { cn, PresentationNav } from '@repo/ui'
+import { PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
-import {
-  ChipButton,
-  KEYBOARD_HINTS,
-  POSITION_CLASSES,
-  VARIANT_LABELS,
-} from '@/components/presentation/AvatarControls'
+import { AvatarControlsPanel } from '@/components/presentation/AvatarControlsPanel'
 import { AwakeningDivider } from '@/components/presentation/lyra-story/AwakeningDivider'
 import { BreakingThingsSection } from '@/components/presentation/lyra-story/BreakingThingsSection'
 import { BuildingHabitsSection } from '@/components/presentation/lyra-story/BuildingHabitsSection'
@@ -36,10 +31,9 @@ import { TitleSection } from '@/components/presentation/lyra-story/TitleSection'
 import { SectionContainer } from '@/components/presentation/SectionContainer'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { m } from '@/paraglide/messages'
+import { useAvatarKeyboardControls } from '@/hooks/useAvatarKeyboardControls'
+import { useSectionTracking } from '@/hooks/useSectionTracking'
 import {
-  AVATAR_POSITIONS,
-  AVATAR_SIZES,
-  AVATAR_VARIANTS,
   type AvatarPosition,
   type AvatarVariant,
 } from '@/routes/talks/lyra-story'
@@ -116,57 +110,15 @@ function LyraStoryContent() {
   )
 
   // Keyboard shortcuts: V = cycle variant, [/] = resize, P = cycle position
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      const { avatar: av, avatarSize: sz, avatarPos: pos } = avatarParamsRef.current
-      if (e.key === 'v' || e.key === 'V') {
-        const idx = AVATAR_VARIANTS.indexOf(av)
-        setAvatarParam({ avatar: AVATAR_VARIANTS[(idx + 1) % AVATAR_VARIANTS.length] })
-      } else if (e.key === ']') {
-        const idx = AVATAR_SIZES.indexOf(sz as (typeof AVATAR_SIZES)[number])
-        setAvatarParam({ avatarSize: AVATAR_SIZES[Math.min(idx + 1, AVATAR_SIZES.length - 1)] })
-      } else if (e.key === '[') {
-        const idx = AVATAR_SIZES.indexOf(sz as (typeof AVATAR_SIZES)[number])
-        setAvatarParam({ avatarSize: AVATAR_SIZES[Math.max(idx - 1, 0)] })
-      } else if (e.key === 'p' || e.key === 'P') {
-        const idx = AVATAR_POSITIONS.indexOf(pos)
-        setAvatarParam({ avatarPos: AVATAR_POSITIONS[(idx + 1) % AVATAR_POSITIONS.length] })
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [setAvatarParam])
+  useAvatarKeyboardControls(avatarParamsRef, setAvatarParam)
 
   const companionStage = computeCompanionStage(currentSectionIndex, AWAKENING_IDX)
 
-  useEffect(() => {
-    const callback: IntersectionObserverCallback = (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const index = sectionIds.indexOf(entry.target.id)
-          if (index !== -1) setCurrentSectionIndex(index)
-        }
-      }
-    }
-    // Use a lower threshold for the thin awakening divider to avoid erratic jumps
-    const defaultObserver = new IntersectionObserver(callback, { threshold: 0.5 })
-    const awakeningObserver = new IntersectionObserver(callback, { threshold: 0.1 })
-    for (const id of sectionIds) {
-      const el = document.getElementById(id)
-      if (el) {
-        if (id === 'awakening') {
-          awakeningObserver.observe(el)
-        } else {
-          defaultObserver.observe(el)
-        }
-      }
-    }
-    return () => {
-      defaultObserver.disconnect()
-      awakeningObserver.disconnect()
-    }
-  }, [])
+  // Use a lower threshold for the thin 'awakening' divider to avoid erratic jumps
+  useSectionTracking(sectionIds, setCurrentSectionIndex, {
+    thinSectionId: 'awakening',
+    thinThreshold: 0.1,
+  })
 
   const sections = useMemo(
     () => [
@@ -251,50 +203,16 @@ function LyraStoryContent() {
       {/* Lyra avatar companion — evolves with each section.
           Hidden on mobile (hidden md:block) — presenter uses a desktop + slide clicker.
           TODO: add a mobile FAB for touch control if needed. */}
-      <div className={cn('fixed z-40 hidden md:block group', POSITION_CLASSES[avatarPos])}>
+      <AvatarControlsPanel
+        avatar={avatar}
+        avatarSize={avatarSize}
+        avatarPos={avatarPos}
+        setAvatarParam={setAvatarParam}
+      >
         <Link to="/talks/lyra-companion-test" aria-label="Open avatar playground">
           <LyraCompanion stage={companionStage} variant={avatar} size={avatarSize} />
         </Link>
-
-        {/* Hover-reveal controls */}
-        <div className="mt-1 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
-          {/* Variant chips */}
-          <div className="flex items-center gap-1 rounded-lg bg-black/60 backdrop-blur-sm px-2 py-1">
-            {AVATAR_VARIANTS.map((v) => (
-              <ChipButton
-                key={v}
-                active={avatar === v}
-                onClick={() => setAvatarParam({ avatar: v })}
-                title={v}
-                aria-label={`Switch to ${v} variant`}
-              >
-                {VARIANT_LABELS[v]}
-              </ChipButton>
-            ))}
-          </div>
-          {/* Size chips */}
-          <div className="flex items-center gap-1 rounded-lg bg-black/60 backdrop-blur-sm px-2 py-1">
-            {AVATAR_SIZES.map((s) => (
-              <ChipButton
-                key={s}
-                active={avatarSize === s}
-                onClick={() => setAvatarParam({ avatarSize: s })}
-                aria-label={`Set size to ${s}`}
-              >
-                {s}
-              </ChipButton>
-            ))}
-          </div>
-          {/* Keyboard shortcut hints */}
-          <div className="flex items-center gap-2 rounded-lg bg-black/40 backdrop-blur-sm px-2 py-1">
-            {KEYBOARD_HINTS.map(({ key, label }) => (
-              <span key={key} className="text-[9px] font-mono text-white/30">
-                <span className="text-white/50">{key}</span> {label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      </AvatarControlsPanel>
 
       {/* Section navigation dots */}
       <PresentationNav

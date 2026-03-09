@@ -1,5 +1,5 @@
 import { cn, useReducedMotion } from '@repo/ui'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 export type RpgColors = {
   primary: string
@@ -124,10 +124,20 @@ function blendWithBlack(hex: string, amount: number): string {
 }
 
 export function RpgCanvasVariant({ stage, size, className, colors }: RpgCanvasVariantProps) {
-  const c: RpgColors = { ...DEFAULT_COLORS, ...colors }
+  const c = useMemo(
+    () => ({ ...DEFAULT_COLORS, ...colors }),
+    // Individual color values as deps so the object identity stabilizes when colors are constant
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [colors?.primary, colors?.secondary, colors?.hair, colors?.dark]
+  )
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const frameRef = useRef(0)
   const reducedMotion = useReducedMotion()
+
+  // Pixel array only changes when stage or colors change — memoize outside the RAF hot-path
+  const pixels = useMemo(() => getCharacterPixels(stage, c), [stage, c])
+  const pixelsRef = useRef(pixels)
+  pixelsRef.current = pixels
 
   const draw = useCallback(
     (timestamp: number) => {
@@ -152,7 +162,7 @@ export function RpgCanvasVariant({ stage, size, className, colors }: RpgCanvasVa
       // Glitch offset for stage 2
       const glitchX = stage === 2 && !reducedMotion ? Math.sin(timestamp / 50) * 0.5 : 0
 
-      const pixels = getCharacterPixels(stage, c)
+      const pixels = pixelsRef.current
 
       ctx.save()
       ctx.translate(glitchX, bounce)

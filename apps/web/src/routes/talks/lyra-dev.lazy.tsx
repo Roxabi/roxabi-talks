@@ -3,12 +3,7 @@ import { createLazyFileRoute, Link, useNavigate, useSearch } from '@tanstack/rea
 import { ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
-import {
-  ChipButton,
-  KEYBOARD_HINTS,
-  POSITION_CLASSES,
-  VARIANT_LABELS,
-} from '@/components/presentation/AvatarControls'
+import { AvatarControlsPanel } from '@/components/presentation/AvatarControlsPanel'
 import { AbandonedQuestSection } from '@/components/presentation/lyra-dev/AbandonedQuestSection'
 import { AwakeningNightSection } from '@/components/presentation/lyra-dev/AwakeningNightSection'
 import { BuildChangeSection } from '@/components/presentation/lyra-dev/BuildChangeSection'
@@ -33,10 +28,9 @@ import { LyraCompanion } from '@/components/presentation/lyra-story/LyraCompanio
 import { SectionContainer } from '@/components/presentation/SectionContainer'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { m } from '@/paraglide/messages'
+import { useAvatarKeyboardControls } from '@/hooks/useAvatarKeyboardControls'
+import { useSectionTracking } from '@/hooks/useSectionTracking'
 import {
-  AVATAR_POSITIONS,
-  AVATAR_SIZES,
-  AVATAR_VARIANTS,
   type AvatarPosition,
   type AvatarVariant,
 } from '@/routes/talks/lyra-dev'
@@ -95,47 +89,11 @@ export function LyraDevPresentation() {
     [navigate]
   )
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      const { avatar: av, avatarSize: sz, avatarPos: pos } = avatarParamsRef.current
-      if (e.key === 'v' || e.key === 'V') {
-        const idx = AVATAR_VARIANTS.indexOf(av)
-        setAvatarParam({ avatar: AVATAR_VARIANTS[(idx + 1) % AVATAR_VARIANTS.length] })
-      } else if (e.key === ']') {
-        const idx = AVATAR_SIZES.indexOf(sz as (typeof AVATAR_SIZES)[number])
-        setAvatarParam({ avatarSize: AVATAR_SIZES[Math.min(idx + 1, AVATAR_SIZES.length - 1)] })
-      } else if (e.key === '[') {
-        const idx = AVATAR_SIZES.indexOf(sz as (typeof AVATAR_SIZES)[number])
-        setAvatarParam({ avatarSize: AVATAR_SIZES[Math.max(idx - 1, 0)] })
-      } else if (e.key === 'p' || e.key === 'P') {
-        const idx = AVATAR_POSITIONS.indexOf(pos)
-        setAvatarParam({ avatarPos: AVATAR_POSITIONS[(idx + 1) % AVATAR_POSITIONS.length] })
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [setAvatarParam])
+  useAvatarKeyboardControls(avatarParamsRef, setAvatarParam)
+  useSectionTracking(sectionIds, setCurrentSectionIndex, { root: scrollContainerRef.current })
 
-  useEffect(() => {
-    const callback: IntersectionObserverCallback = (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          const index = sectionIds.indexOf(entry.target.id)
-          if (index !== -1) setCurrentSectionIndex(index)
-        }
-      }
-    }
-    const observer = new IntersectionObserver(callback, {
-      threshold: 0.5,
-      root: scrollContainerRef.current,
-    })
-    for (const id of sectionIds) {
-      const el = document.getElementById(id)
-      if (el) observer.observe(el)
-    }
-    return () => observer.disconnect()
-  }, [])
+  const currentZone = devZones[sectionIds[currentSectionIndex] ?? '']
+  const currentZoneColors = currentZone ? colorMap[currentZone.color] : null
 
   return (
     <div
@@ -160,17 +118,11 @@ export function LyraDevPresentation() {
             {m.talk_index_title()}
           </Link>
         </div>
-        {(() => {
-          const id = sectionIds[currentSectionIndex] ?? ''
-          const zone = devZones[id]
-          if (!zone) return null
-          const colors = colorMap[zone.color]
-          return (
-            <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', colors.text)}>
-              {zone.zone}
-            </span>
-          )
-        })()}
+        {currentZone && currentZoneColors && (
+          <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', currentZoneColors.text)}>
+            {currentZone.zone}
+          </span>
+        )}
       </div>
 
       {/* Controls */}
@@ -187,50 +139,19 @@ export function LyraDevPresentation() {
       </div>
 
       {/* Lyra avatar companion — hidden on mobile */}
-      <div className={cn('fixed z-40 hidden md:block group', POSITION_CLASSES[avatarPos])}>
+      <AvatarControlsPanel
+        avatar={avatar}
+        avatarSize={avatarSize}
+        avatarPos={avatarPos}
+        setAvatarParam={setAvatarParam}
+      >
         <LyraCompanion
           stage={currentSectionIndex}
           variant={avatar}
           size={avatarSize}
           rpgColors={{ primary: '#10b981', secondary: '#f59e0b', hair: '#6ee7b7', dark: '#0d2b1a' }}
         />
-
-        {/* Hover-reveal controls */}
-        <div className="mt-1 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
-          <div className="flex items-center gap-1 rounded-lg bg-black/60 backdrop-blur-sm px-2 py-1">
-            {AVATAR_VARIANTS.map((v) => (
-              <ChipButton
-                key={v}
-                active={avatar === v}
-                onClick={() => setAvatarParam({ avatar: v })}
-                title={v}
-                aria-label={m.talk_avatar_switch_variant()}
-              >
-                {VARIANT_LABELS[v]}
-              </ChipButton>
-            ))}
-          </div>
-          <div className="flex items-center gap-1 rounded-lg bg-black/60 backdrop-blur-sm px-2 py-1">
-            {AVATAR_SIZES.map((s) => (
-              <ChipButton
-                key={s}
-                active={avatarSize === s}
-                onClick={() => setAvatarParam({ avatarSize: s })}
-                aria-label={m.talk_avatar_set_size()}
-              >
-                {s}
-              </ChipButton>
-            ))}
-          </div>
-          <div className="flex items-center gap-2 rounded-lg bg-black/40 backdrop-blur-sm px-2 py-1">
-            {KEYBOARD_HINTS.map(({ key, label }) => (
-              <span key={key} className="text-[9px] font-mono text-white/30">
-                <span className="text-white/50">{key}</span> {label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      </AvatarControlsPanel>
 
       {/* Section navigation */}
       <PresentationNav
