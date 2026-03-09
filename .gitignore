@@ -10,6 +10,7 @@ coverage/
 playwright-report/
 test-results/
 apps/web/src/routeTree.gen.ts
+*.tsbuildinfo
 apps/web/src/paraglide/
 .claude/stack.yml
 

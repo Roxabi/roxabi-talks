@@ -16,7 +16,7 @@ import { CharacterCreationSection } from '@/components/presentation/lyra-dev/Cha
 import { CharacterSheetSection } from '@/components/presentation/lyra-dev/CharacterSheetSection'
 import { ClosingSection } from '@/components/presentation/lyra-dev/ClosingSection'
 import { CraftSystemSection } from '@/components/presentation/lyra-dev/CraftSystemSection'
-import { DEV_SECTION_IDS } from '@/components/presentation/lyra-dev/devConfig'
+import { colorMap, DEV_SECTION_IDS, devZones } from '@/components/presentation/lyra-dev/devConfig'
 import { EndgameSection } from '@/components/presentation/lyra-dev/EndgameSection'
 import { GrandRespecSection } from '@/components/presentation/lyra-dev/GrandRespecSection'
 import { GuildHallSection } from '@/components/presentation/lyra-dev/GuildHallSection'
@@ -144,7 +144,7 @@ export function LyraDevPresentation() {
       className="relative bg-[#060d08] text-foreground min-h-dvh"
     >
       {/* Breadcrumb */}
-      <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
+      <div className="fixed left-6 top-6 z-50 flex flex-col gap-1">
         <div className="flex items-center gap-1.5">
           <a
             href={import.meta.env.VITE_APP_URL ?? '/'}
@@ -160,6 +160,17 @@ export function LyraDevPresentation() {
             {m.talk_index_title()}
           </Link>
         </div>
+        {(() => {
+          const id = sectionIds[currentSectionIndex] ?? ''
+          const zone = devZones[id]
+          if (!zone) return null
+          const colors = colorMap[zone.color]
+          return (
+            <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', colors.text)}>
+              {zone.zone}
+            </span>
+          )
+        })()}
       </div>
 
       {/* Controls */}
