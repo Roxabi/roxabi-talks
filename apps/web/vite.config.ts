@@ -12,11 +12,12 @@ async function getPlugins() {
     paraglideVitePlugin({
       project: './project.inlang',
       outdir: './src/paraglide',
-      strategy: ['baseLocale'],
+      strategy: ['cookie', 'preferredLanguage', 'baseLocale'],
     }),
     nitro({
       config: {
         builder: 'rolldown',
+        preset: process.env.NITRO_PRESET,
       },
     }),
     viteTsConfigPaths({
@@ -26,7 +27,7 @@ async function getPlugins() {
       ],
     }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({ router: { routeFileIgnorePattern: '\\.test\\.' } }),
     viteReact(),
   ] as PluginOption[]
 }

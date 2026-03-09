@@ -1,6 +1,7 @@
 import { PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useCallback, useMemo, useRef } from 'react'
+import { ChevronRight } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { AgentTeamsSection } from '@/components/presentation/AgentTeamsSection'
 import { BuildingBlocksSection } from '@/components/presentation/BuildingBlocksSection'
@@ -19,10 +20,40 @@ export const Route = createLazyFileRoute('/talks/claude-code')({
   component: ClaudeCodePresentation,
 })
 
+const SECTION_IDS = [
+  'intro',
+  'building-blocks',
+  'specialization',
+  'dev-process',
+  'toolchain',
+  'agent-teams',
+  'end-to-end',
+  'lessons',
+  'closing',
+]
+
 export function ClaudeCodePresentation() {
   const navigate = useNavigate()
   const handleEscape = useCallback(() => navigate({ to: '/talks' }), [navigate])
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
+
+  useEffect(() => {
+    const callback: IntersectionObserverCallback = (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const index = SECTION_IDS.indexOf(entry.target.id)
+          if (index !== -1) setCurrentSectionIndex(index)
+        }
+      }
+    }
+    const observer = new IntersectionObserver(callback, { threshold: 0.5 })
+    for (const id of SECTION_IDS) {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    }
+    return () => observer.disconnect()
+  }, [])
 
   const sections = useMemo(
     () => [
@@ -41,14 +72,30 @@ export function ClaudeCodePresentation() {
 
   return (
     <div data-presentation className="relative bg-background text-foreground">
-      {/* Roxabi wordmark */}
-      <div className="fixed left-6 top-6 z-50">
-        <Link
-          to="/"
-          className="text-sm font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
-        >
-          Roxabi
-        </Link>
+      {/* Breadcrumb */}
+      <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/"
+            className="text-xs font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
+          >
+            Roxabi
+          </Link>
+          <ChevronRight className="size-3 text-muted-foreground/40" aria-hidden="true" />
+          <Link
+            to="/talks"
+            className="text-xs font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
+          >
+            {m.talk_index_title()}
+          </Link>
+          <ChevronRight className="size-3 text-muted-foreground/40" aria-hidden="true" />
+          <span className="text-xs font-bold tracking-wider text-muted-foreground/50 uppercase">
+            {m.talk_index_claude_code_title()}
+          </span>
+        </div>
+        <p className="text-[10px] text-muted-foreground/40 truncate max-w-[260px]">
+          {sections[currentSectionIndex]?.label}
+        </p>
       </div>
 
       {/* Locale switcher + Theme toggle */}
