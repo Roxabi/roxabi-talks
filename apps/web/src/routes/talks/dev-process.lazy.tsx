@@ -108,12 +108,12 @@ export function DevProcessPresentation() {
       {/* Breadcrumb */}
       <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
         <div className="flex items-center gap-1.5">
-          <Link
-            to="/"
+          <a
+            href={import.meta.env.VITE_APP_URL ?? '/'}
             className="text-xs font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
           >
             Roxabi
-          </Link>
+          </a>
           <ChevronRight className="size-3 text-muted-foreground/40" aria-hidden="true" />
           <Link
             to="/talks"

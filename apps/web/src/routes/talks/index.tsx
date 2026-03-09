@@ -14,12 +14,12 @@ export function TalksIndex() {
     <div className="flex min-h-dvh flex-col items-center justify-center px-6 py-16">
       {/* Breadcrumb */}
       <div className="fixed left-6 top-6 z-50 flex items-center gap-1.5">
-        <Link
-          to="/"
+        <a
+          href={import.meta.env.VITE_APP_URL ?? '/'}
           className="text-xs font-bold tracking-wider text-muted-foreground/70 hover:text-foreground transition-colors uppercase"
         >
           Roxabi
-        </Link>
+        </a>
         <ChevronRight className="size-3 text-muted-foreground/40" aria-hidden="true" />
         <span className="text-xs font-bold tracking-wider text-muted-foreground/50 uppercase">
           {m.talk_index_title()}
