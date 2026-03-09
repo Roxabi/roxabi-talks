@@ -5,6 +5,8 @@ import {
   Outlet,
   Scripts,
 } from '@tanstack/react-router'
+import { ThemeProvider } from 'next-themes'
+import { getLocale } from '@/paraglide/runtime'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
@@ -16,13 +18,15 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <html lang="en">
+    <html lang={getLocale()} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        <Outlet />
-        <Toaster />
+        <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange>
+          <Outlet />
+          <Toaster />
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

@@ -4,13 +4,6 @@ import { m } from '@/paraglide/messages'
 export function TitleSection() {
   return (
     <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center justify-center text-center">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500/10 blur-[180px]" />
-        <div className="absolute left-1/3 top-1/3 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-500/8 blur-[120px]" />
-        <div className="absolute right-1/4 bottom-1/4 h-[200px] w-[200px] rounded-full bg-amber-600/6 blur-[100px]" />
-      </div>
-
       <div className="relative space-y-8 py-4">
         <AnimatedSection>
           <Badge className="border border-amber-400/50 bg-amber-500/15 text-amber-300 tracking-widest uppercase text-[10px] font-mono">

@@ -17,7 +17,9 @@ export function IntroSection() {
           </Badge>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-bold tracking-tight lg:text-6xl">
-            {m.talk_dp_intro_title()}
+            <span className="bg-gradient-to-br from-foreground via-primary to-foreground dark:from-white dark:via-primary dark:to-white bg-clip-text text-transparent">
+              {m.talk_dp_intro_title()}
+            </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-xl text-muted-foreground lg:text-2xl">

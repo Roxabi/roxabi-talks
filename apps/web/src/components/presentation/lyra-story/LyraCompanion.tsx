@@ -1,8 +1,8 @@
 import { cn, useReducedMotion } from '@repo/ui'
 import { useId } from 'react'
 import { BlobVariant } from './variants/BlobVariant'
-import { PokemonVariant } from './variants/PokemonVariant'
-import { RpgCanvasVariant } from './variants/RpgCanvasVariant'
+import { type PokemonColors, PokemonVariant } from './variants/PokemonVariant'
+import { type RpgColors, RpgCanvasVariant } from './variants/RpgCanvasVariant'
 import { SilhouetteVariant } from './variants/SilhouetteVariant'
 import { TamagotchiVariant } from './variants/TamagotchiVariant'
 
@@ -23,16 +23,20 @@ type LyraCompanionProps = {
   /** Size in px */
   size?: number
   className?: string
+  /** Optional color overrides for rpg-canvas variant */
+  rpgColors?: Partial<RpgColors>
+  /** Optional color overrides for pokemon variant */
+  pokemonColors?: Partial<PokemonColors>
 }
 
-export function LyraCompanion({ stage, variant, size = 80, className }: LyraCompanionProps) {
+export function LyraCompanion({ stage, variant, size = 80, className, rpgColors, pokemonColors }: LyraCompanionProps) {
   switch (variant) {
     case 'quantum':
       return <QuantumVariant stage={stage} size={size} className={className} />
     case 'constellation':
       return <ConstellationVariant stage={stage} size={size} className={className} />
     case 'rpg-canvas':
-      return <RpgCanvasVariant stage={stage} size={size} className={className} />
+      return <RpgCanvasVariant stage={stage} size={size} className={className} colors={rpgColors} />
     case 'tamagotchi':
       return <TamagotchiVariant stage={stage} size={size} className={className} />
     case 'silhouette':
@@ -40,7 +44,7 @@ export function LyraCompanion({ stage, variant, size = 80, className }: LyraComp
     case 'blob':
       return <BlobVariant stage={stage} size={size} className={className} />
     case 'pokemon':
-      return <PokemonVariant stage={stage} size={size} className={className} />
+      return <PokemonVariant stage={stage} size={size} className={className} colors={pokemonColors} />
   }
 }
 
