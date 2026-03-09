@@ -8,13 +8,13 @@ import {
 
 export const searchSchema = z.object({
   mode: z.enum(['story', 'mmorpg']).optional().default('story'),
-  avatar: z.enum(AVATAR_VARIANTS).optional().default('constellation'),
+  avatar: z.enum(AVATAR_VARIANTS).optional().default('pokemon'),
   avatarSize: z.coerce
     .number()
     .refine((n) => (AVATAR_SIZES as readonly number[]).includes(n))
-    .catch(400)
+    .catch(200)
     .optional()
-    .default(400),
+    .default(200),
   avatarPos: z.enum(AVATAR_POSITIONS).optional().default('bottom-left'),
 })
 

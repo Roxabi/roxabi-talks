@@ -1,62 +1,64 @@
 import { cn, useReducedMotion } from '@repo/ui'
 import { useCallback, useEffect, useRef } from 'react'
 
+export type RpgColors = {
+  primary: string
+  secondary: string
+  hair: string
+  dark: string
+}
+
+const DEFAULT_COLORS: RpgColors = {
+  primary: '#2D7FF9',
+  secondary: '#8B5CF6',
+  hair: '#2D7FF9',
+  dark: '#1a1a3e',
+}
+
 type RpgCanvasVariantProps = {
   stage: number
   size: number
   className?: string
+  colors?: Partial<RpgColors>
 }
 
 // Colors
 const SKIN = '#e0c8a8'
-const HAIR = '#2D7FF9'
-const DARK = '#1a1a3e'
-const BLUE = '#2D7FF9'
-const PURPLE = '#8B5CF6'
 const GOLD = '#ffd700'
 const SILVER = '#c0c0c0'
 
 // 16x16 grid sprite frames — each is an array of [x, y, color] tuples
 type Pixel = [number, number, string]
 
-function getCharacterPixels(stage: number): Pixel[] {
+function getCharacterPixels(stage: number, c: RpgColors): Pixel[] {
   const pixels: Pixel[] = []
+  const primaryDark = blendWithBlack(c.primary, 0.35)
 
   if (stage === 0) {
-    pixels.push([8, 9, BLUE])
+    pixels.push([8, 9, c.primary])
     return pixels
   }
 
   if (stage === 1) {
-    pixels.push([8, 8, BLUE], [7, 9, PURPLE], [9, 9, PURPLE])
+    pixels.push([8, 8, c.primary], [7, 9, c.secondary], [9, 9, c.secondary])
     return pixels
   }
 
   if (stage === 2) {
     pixels.push(
-      [7, 7, BLUE],
-      [8, 7, BLUE],
-      [9, 7, BLUE],
-      [7, 8, BLUE],
-      [8, 8, '#ff4444'],
-      [9, 8, BLUE],
-      [7, 9, BLUE],
-      [8, 9, BLUE],
-      [9, 9, BLUE]
+      [7, 7, c.primary], [8, 7, c.primary], [9, 7, c.primary],
+      [7, 8, c.primary], [8, 8, '#ff4444'], [9, 8, c.primary],
+      [7, 9, c.primary], [8, 9, c.primary], [9, 9, c.primary]
     )
     return pixels
   }
 
   // Base character (stage 3+)
-  // Head
   for (let x = 7; x <= 10; x++) for (let y = 3; y <= 6; y++) pixels.push([x, y, SKIN])
-  // Eyes
-  pixels.push([8, 4, DARK], [10, 4, DARK])
-  // Body
-  for (let x = 7; x <= 10; x++) for (let y = 7; y <= 10; y++) pixels.push([x, y, BLUE])
-  // Legs
+  pixels.push([8, 4, c.dark], [10, 4, c.dark])
+  for (let x = 7; x <= 10; x++) for (let y = 7; y <= 10; y++) pixels.push([x, y, c.primary])
   for (let y = 11; y <= 13; y++) {
-    pixels.push([7, y, DARK], [8, y, DARK], [9, y, DARK], [10, y, DARK])
+    pixels.push([7, y, c.dark], [8, y, c.dark], [9, y, c.dark], [10, y, c.dark])
   }
 
   if (stage >= 4) pixels.push([8, 5, '#c89878'], [9, 5, '#c89878'])
@@ -65,45 +67,38 @@ function getCharacterPixels(stage: number): Pixel[] {
     pixels.push([5, 8, SKIN], [5, 9, SKIN], [12, 8, SKIN], [12, 9, SKIN])
   }
   if (stage >= 6) {
-    pixels.push([8, 8, '#1e5fc2'], [9, 8, '#1e5fc2'], [8, 9, '#1e5fc2'], [9, 9, '#1e5fc2'])
+    pixels.push([8, 8, primaryDark], [9, 8, primaryDark], [8, 9, primaryDark], [9, 9, primaryDark])
   }
   if (stage >= 7) {
-    for (let y = 4; y <= 11; y++) pixels.push([6, y, PURPLE])
-    for (let y = 4; y <= 11; y++) pixels.push([11, y, PURPLE])
-    pixels.push([5, 11, PURPLE], [6, 12, PURPLE], [11, 11, PURPLE], [12, 12, PURPLE])
+    for (let y = 4; y <= 11; y++) pixels.push([6, y, c.secondary])
+    for (let y = 4; y <= 11; y++) pixels.push([11, y, c.secondary])
+    pixels.push([5, 11, c.secondary], [6, 12, c.secondary], [11, 11, c.secondary], [12, 12, c.secondary])
   }
   if (stage >= 8) {
-    pixels.push([7, 2, HAIR], [8, 2, HAIR], [9, 2, HAIR], [10, 2, HAIR])
-    pixels.push([6, 3, HAIR], [6, 4, HAIR], [11, 3, HAIR], [11, 4, HAIR])
+    pixels.push([7, 2, c.hair], [8, 2, c.hair], [9, 2, c.hair], [10, 2, c.hair])
+    pixels.push([6, 3, c.hair], [6, 4, c.hair], [11, 3, c.hair], [11, 4, c.hair])
   }
   if (stage >= 9) {
     pixels.push([7, 1, GOLD], [9, 1, GOLD], [8, 0, GOLD], [9, 0, GOLD], [10, 1, GOLD])
   }
   if (stage >= 10) {
-    pixels.push([8, 4, BLUE], [10, 4, BLUE])
+    pixels.push([8, 4, c.primary], [10, 4, c.primary])
   }
   if (stage >= 11) {
-    pixels.push([2, 5, BLUE], [15, 5, PURPLE], [2, 12, PURPLE])
+    pixels.push([2, 5, c.primary], [15, 5, c.secondary], [2, 12, c.secondary])
   }
   if (stage >= 12) {
     pixels.push(
-      [13, 5, SILVER],
-      [13, 6, SILVER],
-      [13, 7, '#a0a0a0'],
-      [13, 8, '#a0a0a0'],
-      [13, 9, '#a0a0a0'],
-      [12, 7, GOLD],
-      [14, 7, GOLD]
+      [13, 5, SILVER], [13, 6, SILVER],
+      [13, 7, '#a0a0a0'], [13, 8, '#a0a0a0'], [13, 9, '#a0a0a0'],
+      [12, 7, GOLD], [14, 7, GOLD]
     )
   }
   if (stage >= 13) {
     pixels.push(
-      [3, 7, BLUE],
-      [4, 7, BLUE],
-      [3, 8, BLUE],
-      [4, 8, '#1e5fc2'],
-      [3, 9, BLUE],
-      [4, 9, '#1e5fc2'],
+      [3, 7, c.primary], [4, 7, c.primary],
+      [3, 8, c.primary], [4, 8, primaryDark],
+      [3, 9, c.primary], [4, 9, primaryDark],
       [4, 8, GOLD]
     )
   }
@@ -118,7 +113,18 @@ function getCharacterPixels(stage: number): Pixel[] {
   return pixels
 }
 
-export function RpgCanvasVariant({ stage, size, className }: RpgCanvasVariantProps) {
+function blendWithBlack(hex: string, amount: number): string {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  const nr = Math.round(r * (1 - amount))
+  const ng = Math.round(g * (1 - amount))
+  const nb = Math.round(b * (1 - amount))
+  return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`
+}
+
+export function RpgCanvasVariant({ stage, size, className, colors }: RpgCanvasVariantProps) {
+  const c: RpgColors = { ...DEFAULT_COLORS, ...colors }
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const frameRef = useRef(0)
   const reducedMotion = useReducedMotion()
@@ -146,7 +152,7 @@ export function RpgCanvasVariant({ stage, size, className }: RpgCanvasVariantPro
       // Glitch offset for stage 2
       const glitchX = stage === 2 && !reducedMotion ? Math.sin(timestamp / 50) * 0.5 : 0
 
-      const pixels = getCharacterPixels(stage)
+      const pixels = getCharacterPixels(stage, c)
 
       ctx.save()
       ctx.translate(glitchX, bounce)
@@ -161,9 +167,9 @@ export function RpgCanvasVariant({ stage, size, className }: RpgCanvasVariantPro
       // XP bar
       if (stage >= 3) {
         const t = stage / 16
-        ctx.fillStyle = '#1a1a2e'
+        ctx.fillStyle = c.dark
         ctx.fillRect(1, 16, 16, 1)
-        ctx.fillStyle = BLUE
+        ctx.fillStyle = c.primary
         ctx.fillRect(1, 16, 16 * t, 1)
       }
 

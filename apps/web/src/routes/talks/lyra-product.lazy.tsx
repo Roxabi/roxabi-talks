@@ -146,12 +146,12 @@ export function LyraProductPresentation() {
       {/* Breadcrumb */}
       <div className="fixed left-6 top-6 z-50 flex flex-col gap-0.5">
         <div className="flex items-center gap-1.5">
-          <Link
-            to="/"
+          <a
+            href={import.meta.env.VITE_APP_URL ?? '/'}
             className="font-mono text-xs font-bold tracking-wider text-amber-400/50 hover:text-amber-400 transition-colors uppercase"
           >
             Roxabi
-          </Link>
+          </a>
           <ChevronRight className="size-3 text-amber-400/30" aria-hidden="true" />
           <Link
             to="/talks"
@@ -159,14 +159,7 @@ export function LyraProductPresentation() {
           >
             {m.talk_index_title()}
           </Link>
-          <ChevronRight className="size-3 text-amber-400/30" aria-hidden="true" />
-          <span className="font-mono text-xs font-bold tracking-wider text-amber-400/30 uppercase">
-            {m.talk_index_lyraproduct_title()}
-          </span>
         </div>
-        <p className="font-mono text-[10px] text-amber-400/30 truncate max-w-[260px]">
-          {sections[currentSectionIndex]?.label}
-        </p>
       </div>
 
       {/* Controls */}

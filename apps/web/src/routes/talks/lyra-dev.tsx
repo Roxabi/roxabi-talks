@@ -11,13 +11,13 @@ import {
 export { AVATAR_VARIANTS, AVATAR_POSITIONS, AVATAR_SIZES, type AvatarVariant, type AvatarPosition }
 
 const searchSchema = z.object({
-  avatar: z.enum(AVATAR_VARIANTS).optional().default('constellation'),
+  avatar: z.enum(AVATAR_VARIANTS).optional().default('rpg-canvas'),
   avatarSize: z.coerce
     .number()
     .refine((n) => (AVATAR_SIZES as readonly number[]).includes(n))
-    .catch(400)
+    .catch(200)
     .optional()
-    .default(400),
+    .default(200),
   avatarPos: z.enum(AVATAR_POSITIONS).optional().default('bottom-left'),
 })
 
