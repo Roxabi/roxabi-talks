@@ -13,9 +13,14 @@
     "Python-2.0",
     "BlueOak-1.0.0",
     "MPL-2.0",
-    "OFL-1.1"
+    "OFL-1.1",
+    "Remotion-Free"
   ],
   "overrides": {
-    "@bytecodealliance/preview2-shim@0.17.6": "Apache-2.0"
+    "@bytecodealliance/preview2-shim@0.17.6": "Apache-2.0",
+    "remotion@4.0.435": "Remotion-Free",
+    "@remotion/player@4.0.435": "Remotion-Free",
+    "@remotion/media-parser@4.0.435": "Remotion-Free",
+    "@remotion/webcodecs@4.0.435": "Remotion-Free"
   }
 }
