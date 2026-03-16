@@ -134,187 +134,191 @@ export default function VoiceSection() {
   const dotPatternId = `${uid}-dots`
 
   return (
-    <div className="relative mx-auto max-w-4xl w-full">
+    <div className="relative mx-auto max-w-5xl w-full overflow-hidden">
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-500/5 blur-[150px]" />
       </div>
 
-      <div className="relative">
-        <AnimatedSection>
-          <div className="mb-2 font-mono text-[10px] tracking-widest text-pink-500 dark:text-pink-400 uppercase">
-            {m.talk_li_voice_phase()}
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight lg:text-5xl mb-6 font-mono text-pink-600 dark:text-pink-300">
-            {m.talk_li_voice_title()}
-          </h2>
-        </AnimatedSection>
+      <div className="relative flex flex-col lg:flex-row lg:gap-8 lg:items-stretch">
+        {/* Left column — title + SVG pipeline */}
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <AnimatedSection>
+            <div className="mb-2 font-mono text-[10px] tracking-widest text-pink-500 dark:text-pink-400 uppercase">
+              {m.talk_li_voice_phase()}
+            </div>
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl mb-6 font-mono text-pink-600 dark:text-pink-300">
+              {m.talk_li_voice_title()}
+            </h2>
+          </AnimatedSection>
 
-        <AnimatedSection className="mt-4">
-          <div className="w-full overflow-x-auto rounded-xl border border-border/50 bg-muted/10 p-4">
-            <svg
-              viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
-              width="100%"
-              aria-label="Voice pipeline diagram showing STT, TTS, and Discord voice pipelines"
-              role="img"
-              style={{ maxWidth: SVG_WIDTH, display: 'block' }}
-            >
-              <defs>
-                <pattern
-                  id={dotPatternId}
-                  x="0"
-                  y="0"
-                  width="20"
-                  height="20"
-                  patternUnits="userSpaceOnUse"
+          <AnimatedSection className="mt-4">
+            <div className="w-full overflow-hidden rounded-xl border border-border/50 bg-muted/10 p-4">
+              <svg
+                viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+                width="100%"
+                aria-label="Voice pipeline diagram showing STT, TTS, and Discord voice pipelines"
+                role="img"
+                style={{ display: 'block' }}
+              >
+                <defs>
+                  <pattern
+                    id={dotPatternId}
+                    x="0"
+                    y="0"
+                    width="20"
+                    height="20"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <circle cx="1" cy="1" r="1" fill={isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)'} />
+                  </pattern>
+                  <ArrowMarker id={markerStt} color={STT_COLOR} />
+                  <ArrowMarker id={markerTts} color={TTS_COLOR} />
+                  <ArrowMarker id={markerDc} color={DISCORD_COLOR} />
+                </defs>
+
+                {/* Dot grid background */}
+                <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill={`url(#${dotPatternId})`} />
+
+                {/* Row labels */}
+                <text
+                  x={LABEL_X}
+                  y={ROW_Y_0}
+                  dominantBaseline="middle"
+                  fontSize={9}
+                  fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
+                  fill={STT_COLOR}
+                  opacity={0.8}
+                  writingMode="lr"
                 >
-                  <circle cx="1" cy="1" r="1" fill={isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)'} />
-                </pattern>
-                <ArrowMarker id={markerStt} color={STT_COLOR} />
-                <ArrowMarker id={markerTts} color={TTS_COLOR} />
-                <ArrowMarker id={markerDc} color={DISCORD_COLOR} />
-              </defs>
+                  STT
+                </text>
+                <text
+                  x={LABEL_X}
+                  y={ROW_Y_1}
+                  dominantBaseline="middle"
+                  fontSize={9}
+                  fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
+                  fill={TTS_COLOR}
+                  opacity={0.8}
+                >
+                  TTS
+                </text>
+                <text
+                  x={LABEL_X}
+                  y={ROW_Y_2}
+                  dominantBaseline="middle"
+                  fontSize={9}
+                  fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
+                  fill={DISCORD_COLOR}
+                  opacity={0.8}
+                >
+                  DC
+                </text>
 
-              {/* Dot grid background */}
-              <rect width={SVG_WIDTH} height={SVG_HEIGHT} fill={`url(#${dotPatternId})`} />
+                {/* STT pipeline */}
+                <PipelineRow
+                  steps={STT_STEPS}
+                  color={STT_COLOR}
+                  outputColor={OUTPUT_COLOR}
+                  y={ROW_Y_0}
+                  markerId={markerStt}
+                  animateArrows={animate}
+                />
 
-              {/* Row labels */}
-              <text
-                x={LABEL_X}
-                y={ROW_Y_0}
-                dominantBaseline="middle"
-                fontSize={9}
-                fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
-                fill={STT_COLOR}
-                opacity={0.8}
-                writingMode="lr"
-              >
-                STT
-              </text>
-              <text
-                x={LABEL_X}
-                y={ROW_Y_1}
-                dominantBaseline="middle"
-                fontSize={9}
-                fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
-                fill={TTS_COLOR}
-                opacity={0.8}
-              >
-                TTS
-              </text>
-              <text
-                x={LABEL_X}
-                y={ROW_Y_2}
-                dominantBaseline="middle"
-                fontSize={9}
-                fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
-                fill={DISCORD_COLOR}
-                opacity={0.8}
-              >
-                DC
-              </text>
+                {/* TTS pipeline */}
+                <PipelineRow
+                  steps={TTS_STEPS}
+                  color={TTS_COLOR}
+                  outputColor={OUTPUT_COLOR}
+                  y={ROW_Y_1}
+                  markerId={markerTts}
+                  animateArrows={animate}
+                />
 
-              {/* STT pipeline */}
-              <PipelineRow
-                steps={STT_STEPS}
-                color={STT_COLOR}
-                outputColor={OUTPUT_COLOR}
-                y={ROW_Y_0}
-                markerId={markerStt}
-                animateArrows={animate}
-              />
+                {/* Discord Voice pipeline */}
+                <PipelineRow
+                  steps={DISCORD_STEPS}
+                  color={DISCORD_COLOR}
+                  outputColor={OUTPUT_COLOR}
+                  y={ROW_Y_2}
+                  markerId={markerDc}
+                  animateArrows={animate}
+                />
 
-              {/* TTS pipeline */}
-              <PipelineRow
-                steps={TTS_STEPS}
-                color={TTS_COLOR}
-                outputColor={OUTPUT_COLOR}
-                y={ROW_Y_1}
-                markerId={markerTts}
-                animateArrows={animate}
-              />
+                {/* Stats badges — STT */}
+                <rect
+                  x={PIPELINE_START_X}
+                  y={ROW_Y_0 + STEP_H / 2 + 8}
+                  width={90}
+                  height={18}
+                  rx={4}
+                  fill={`${STT_COLOR}18`}
+                  stroke={STT_COLOR}
+                  strokeWidth={1}
+                  opacity={0.7}
+                />
+                <text
+                  x={PIPELINE_START_X + 45}
+                  y={ROW_Y_0 + STEP_H / 2 + 17}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={9}
+                  fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
+                  fill={STT_COLOR}
+                  opacity={0.7}
+                >
+                  ~3GB VRAM
+                </text>
 
-              {/* Discord Voice pipeline */}
-              <PipelineRow
-                steps={DISCORD_STEPS}
-                color={DISCORD_COLOR}
-                outputColor={OUTPUT_COLOR}
-                y={ROW_Y_2}
-                markerId={markerDc}
-                animateArrows={animate}
-              />
+                {/* Stats badges — TTS */}
+                <rect
+                  x={PIPELINE_START_X}
+                  y={ROW_Y_1 + STEP_H / 2 + 8}
+                  width={90}
+                  height={18}
+                  rx={4}
+                  fill={`${TTS_COLOR}18`}
+                  stroke={TTS_COLOR}
+                  strokeWidth={1}
+                  opacity={0.7}
+                />
+                <text
+                  x={PIPELINE_START_X + 45}
+                  y={ROW_Y_1 + STEP_H / 2 + 17}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={9}
+                  fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
+                  fill={TTS_COLOR}
+                  opacity={0.7}
+                >
+                  ~5GB VRAM
+                </text>
+              </svg>
+            </div>
+          </AnimatedSection>
 
-              {/* Stats badges — STT */}
-              <rect
-                x={PIPELINE_START_X}
-                y={ROW_Y_0 + STEP_H / 2 + 8}
-                width={90}
-                height={18}
-                rx={4}
-                fill={`${STT_COLOR}18`}
-                stroke={STT_COLOR}
-                strokeWidth={1}
-                opacity={0.7}
-              />
-              <text
-                x={PIPELINE_START_X + 45}
-                y={ROW_Y_0 + STEP_H / 2 + 17}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={9}
-                fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
-                fill={STT_COLOR}
-                opacity={0.7}
-              >
-                ~3GB VRAM
-              </text>
+          <AnimatedSection className="mt-6">
+            <div className="rounded-xl border border-[#5865f2]/20 bg-[#5865f2]/5 p-4">
+              <p className="font-mono text-[10px] text-[#5865f2] uppercase tracking-widest mb-1">
+                {m.talk_li_voice_discord_label()}
+              </p>
+              <p className="text-sm text-muted-foreground/70">
+                {m.talk_li_voice_discord_desc()}
+              </p>
+            </div>
+          </AnimatedSection>
+        </div>
 
-              {/* Stats badges — TTS */}
-              <rect
-                x={PIPELINE_START_X}
-                y={ROW_Y_1 + STEP_H / 2 + 8}
-                width={90}
-                height={18}
-                rx={4}
-                fill={`${TTS_COLOR}18`}
-                stroke={TTS_COLOR}
-                strokeWidth={1}
-                opacity={0.7}
-              />
-              <text
-                x={PIPELINE_START_X + 45}
-                y={ROW_Y_1 + STEP_H / 2 + 17}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={9}
-                fontFamily="ui-monospace, 'Cascadia Code', Menlo, monospace"
-                fill={TTS_COLOR}
-                opacity={0.7}
-              >
-                ~5GB VRAM
-              </text>
-            </svg>
-          </div>
-        </AnimatedSection>
-
-        <AnimatedSection className="mt-6">
-          <div className="max-w-2xl rounded-xl border border-[#5865f2]/20 bg-[#5865f2]/5 p-4">
-            <p className="font-mono text-[10px] text-[#5865f2] uppercase tracking-widest mb-1">
-              {m.talk_li_voice_discord_label()}
-            </p>
-            <p className="text-sm text-muted-foreground/70">
-              {m.talk_li_voice_discord_desc()}
-            </p>
-          </div>
-        </AnimatedSection>
-
-        <AnimatedSection className="mt-8">
-          <div className="max-w-3xl mx-auto w-full rounded-xl overflow-hidden border border-border/50 shadow-xl">
-            <Suspense fallback={<div className="w-full aspect-[700/250] bg-muted/20 animate-pulse rounded-xl" />}>
+        {/* Right column — Voice pipeline Remotion demo, stretches to match */}
+        <div className="mt-8 lg:mt-0 w-full lg:w-[380px] shrink-0 flex flex-col">
+          <div className="w-full max-w-[380px] mx-auto rounded-xl overflow-hidden border border-border/50 shadow-xl flex-1 flex flex-col">
+            <Suspense fallback={<div className="w-full flex-1 min-h-[200px] bg-muted/20 animate-pulse rounded-xl" />}>
               <VoiceDemo />
             </Suspense>
           </div>
-        </AnimatedSection>
+        </div>
       </div>
     </div>
   )

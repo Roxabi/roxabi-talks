@@ -1,19 +1,63 @@
 'use client'
 
+import { createContext, useContext, useEffect, useState } from 'react'
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
 
-// ─── Color tokens ─────────────────────────────────────────────────────────────
+// ─── Theme detection ──────────────────────────────────────────────────────────
 
-const TEAL_BG = '#0d1117'
-const HEADER_BG = '#17212b'
-const USER_BUBBLE = '#2b5278'
-const BOT_BUBBLE = '#182533'
-const TEXT_PRIMARY = '#e8eaed'
-const TEXT_SECONDARY = '#708da5'
-const TEXT_MUTED = '#4a6278'
+function useIsDark() {
+  const [isDark, setIsDark] = useState(true)
+  useEffect(() => {
+    const check = () => {
+      const html = document.documentElement
+      setIsDark(html.classList.contains('dark') || html.getAttribute('data-theme') === 'dark')
+    }
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+  return isDark
+}
+
+// ─── Color palettes ───────────────────────────────────────────────────────────
+
+const DARK_PALETTE = {
+  BG:            '#0d1117',
+  HEADER_BG:     '#17212b',
+  USER_BUBBLE:   '#2b5278',
+  BOT_BUBBLE:    '#182533',
+  TEXT_PRIMARY:  '#e8eaed',
+  TEXT_SECONDARY:'#708da5',
+  TEXT_MUTED:    '#4a6278',
+  INPUT_BG:      'rgba(255,255,255,0.05)',
+  BUBBLE_BORDER: 'rgba(255,255,255,0.05)',
+  HEADER_BORDER: 'rgba(255,255,255,0.06)',
+}
+
+const LIGHT_PALETTE = {
+  BG:            '#f0f0f0',
+  HEADER_BG:     '#ffffff',
+  USER_BUBBLE:   '#007AFF',
+  BOT_BUBBLE:    '#ffffff',
+  TEXT_PRIMARY:  '#1a1a1a',
+  TEXT_SECONDARY:'#555e6b',
+  TEXT_MUTED:    '#8a99a8',
+  INPUT_BG:      'rgba(0,0,0,0.06)',
+  BUBBLE_BORDER: 'rgba(0,0,0,0.08)',
+  HEADER_BORDER: 'rgba(0,0,0,0.08)',
+}
+
+type Palette = typeof DARK_PALETTE
+
+const PaletteCtx = createContext<Palette>(DARK_PALETTE)
+const usePalette = () => useContext(PaletteCtx)
+
+// ─── Shared constants ─────────────────────────────────────────────────────────
+
 const ONLINE_GREEN = '#4ade80'
-const LINK_COLOR = '#6ab3f3'
-const ACCENT_CYAN = '#22d3ee'
+const LINK_COLOR   = '#6ab3f3'
+const ACCENT_CYAN  = '#22d3ee'
 
 // ─── Waveform bar heights (normalized 0–1) ───────────────────────────────────
 
@@ -23,11 +67,12 @@ const WAVEFORM_BARS_BOT  = [0.5, 0.8, 0.4, 0.9, 0.6, 0.3, 0.7, 0.5, 0.8, 0.4, 0.
 // ─── Chat Header ─────────────────────────────────────────────────────────────
 
 function ChatHeader() {
+  const p = usePalette()
   return (
     <div
       style={{
-        background: HEADER_BG,
-        borderBottom: `1px solid rgba(255,255,255,0.06)`,
+        background: p.HEADER_BG,
+        borderBottom: `1px solid ${p.HEADER_BORDER}`,
         padding: '12px 16px',
         display: 'flex',
         alignItems: 'center',
@@ -61,7 +106,7 @@ function ChatHeader() {
             height: 11,
             borderRadius: '50%',
             background: ONLINE_GREEN,
-            border: `2px solid ${HEADER_BG}`,
+            border: `2px solid ${p.HEADER_BG}`,
           }}
         />
       </div>
@@ -70,7 +115,7 @@ function ChatHeader() {
       <div style={{ flex: 1 }}>
         <div
           style={{
-            color: TEXT_PRIMARY,
+            color: p.TEXT_PRIMARY,
             fontSize: 15,
             fontWeight: 700,
             fontFamily: 'system-ui, sans-serif',
@@ -78,15 +123,7 @@ function ChatHeader() {
           }}
         >
           Lyra{' '}
-          <span
-            style={{
-              fontSize: 13,
-              color: ACCENT_CYAN,
-              fontWeight: 400,
-            }}
-          >
-            ⚡
-          </span>
+          <span style={{ fontSize: 13, color: ACCENT_CYAN, fontWeight: 400 }}>⚡</span>
         </div>
         <div
           style={{
@@ -107,12 +144,13 @@ function ChatHeader() {
 // ─── Timestamp ───────────────────────────────────────────────────────────────
 
 function Timestamp({ label }: { label: string }) {
+  const p = usePalette()
   return (
     <div
       style={{
         textAlign: 'right',
         fontSize: 10,
-        color: TEXT_MUTED,
+        color: p.TEXT_MUTED,
         fontFamily: 'system-ui, sans-serif',
         marginTop: 3,
         letterSpacing: '0.01em',
@@ -132,6 +170,7 @@ type UserBubbleProps = {
 }
 
 function UserBubble({ children, enterFrame, fps }: UserBubbleProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -139,9 +178,9 @@ function UserBubble({ children, enterFrame, fps }: UserBubbleProps) {
     config: { damping: 18, stiffness: 200, mass: 0.8 },
   })
 
-  const opacity = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateX = interpolate(progress, [0, 1], [40, 0])
-  const scale = interpolate(progress, [0, 1], [0.9, 1])
+  const scale      = interpolate(progress, [0, 1], [0.9, 1])
 
   return (
     <div
@@ -157,7 +196,7 @@ function UserBubble({ children, enterFrame, fps }: UserBubbleProps) {
     >
       <div
         style={{
-          background: USER_BUBBLE,
+          background: p.USER_BUBBLE,
           borderRadius: '18px 18px 4px 18px',
           padding: '10px 14px',
           maxWidth: '82%',
@@ -165,7 +204,7 @@ function UserBubble({ children, enterFrame, fps }: UserBubbleProps) {
       >
         <div
           style={{
-            color: TEXT_PRIMARY,
+            color: p.TEXT_PRIMARY,
             fontSize: 14,
             fontFamily: 'system-ui, sans-serif',
             lineHeight: 1.5,
@@ -183,14 +222,7 @@ function UserBubble({ children, enterFrame, fps }: UserBubbleProps) {
 
 function BotName() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 6,
-        marginBottom: 4,
-      }}
-    >
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
       <span
         style={{
           color: ACCENT_CYAN,
@@ -230,6 +262,7 @@ type BotBubbleProps = {
 }
 
 function BotBubble({ children, enterFrame, fps, showName = true }: BotBubbleProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -237,9 +270,9 @@ function BotBubble({ children, enterFrame, fps, showName = true }: BotBubbleProp
     config: { damping: 18, stiffness: 200, mass: 0.8 },
   })
 
-  const opacity = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateX = interpolate(progress, [0, 1], [-40, 0])
-  const scale = interpolate(progress, [0, 1], [0.9, 1])
+  const scale      = interpolate(progress, [0, 1], [0.9, 1])
 
   return (
     <div
@@ -276,15 +309,15 @@ function BotBubble({ children, enterFrame, fps, showName = true }: BotBubbleProp
         {showName && <BotName />}
         <div
           style={{
-            background: BOT_BUBBLE,
+            background: p.BOT_BUBBLE,
             borderRadius: '4px 18px 18px 18px',
             padding: '10px 14px',
-            border: `1px solid rgba(255,255,255,0.05)`,
+            border: `1px solid ${p.BUBBLE_BORDER}`,
           }}
         >
           <div
             style={{
-              color: TEXT_PRIMARY,
+              color: p.TEXT_PRIMARY,
               fontSize: 14,
               fontFamily: 'system-ui, sans-serif',
               lineHeight: 1.6,
@@ -307,6 +340,7 @@ type TypingIndicatorProps = {
 }
 
 function TypingIndicator({ enterFrame, fps }: TypingIndicatorProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -314,10 +348,9 @@ function TypingIndicator({ enterFrame, fps }: TypingIndicatorProps) {
     config: { damping: 20, stiffness: 220, mass: 0.7 },
   })
 
-  const opacity = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateX = interpolate(progress, [0, 1], [-30, 0])
 
-  // Staggered dot bounce
   const dotBounce = (offset: number) => {
     const t = ((frame - enterFrame + offset) % 20) / 20
     return Math.sin(t * Math.PI) * -6
@@ -355,10 +388,10 @@ function TypingIndicator({ enterFrame, fps }: TypingIndicatorProps) {
 
       <div
         style={{
-          background: BOT_BUBBLE,
+          background: p.BOT_BUBBLE,
           borderRadius: '4px 18px 18px 18px',
           padding: '14px 18px',
-          border: `1px solid rgba(255,255,255,0.05)`,
+          border: `1px solid ${p.BUBBLE_BORDER}`,
           display: 'flex',
           alignItems: 'center',
           gap: 5,
@@ -371,7 +404,7 @@ function TypingIndicator({ enterFrame, fps }: TypingIndicatorProps) {
               width: 7,
               height: 7,
               borderRadius: '50%',
-              background: TEXT_SECONDARY,
+              background: p.TEXT_SECONDARY,
               transform: `translateY(${dotBounce(offset)}px)`,
               opacity: 0.8,
             }}
@@ -393,6 +426,7 @@ type VoiceMessageBubbleProps = {
 }
 
 function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMessageBubbleProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -400,20 +434,14 @@ function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMes
     config: { damping: 18, stiffness: 200, mass: 0.8 },
   })
 
-  const opacity = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateX = interpolate(progress, [0, 1], [isBot ? -40 : 40, 0])
-  const scale = interpolate(progress, [0, 1], [0.9, 1])
+  const scale      = interpolate(progress, [0, 1], [0.9, 1])
 
-  // Animate waveform playback (highlight bars progressively)
-  const playProgress = interpolate(
-    frame - enterFrame,
-    [0, 60],
-    [0, 1],
-    { extrapolateRight: 'clamp' },
-  )
-  const playedCount = Math.floor(playProgress * bars.length)
+  const playProgress = interpolate(frame - enterFrame, [0, 60], [0, 1], { extrapolateRight: 'clamp' })
+  const playedCount  = Math.floor(playProgress * bars.length)
 
-  const bubbleBg = isBot ? BOT_BUBBLE : USER_BUBBLE
+  const bubbleBg    = isBot ? p.BOT_BUBBLE : p.USER_BUBBLE
   const accentColor = isBot ? ACCENT_CYAN : '#6ab3f3'
   const borderRadius = isBot ? '4px 18px 18px 18px' : '18px 18px 4px 18px'
 
@@ -423,7 +451,7 @@ function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMes
         background: bubbleBg,
         borderRadius,
         padding: '10px 14px',
-        border: isBot ? `1px solid rgba(255,255,255,0.05)` : 'none',
+        border: isBot ? `1px solid ${p.BUBBLE_BORDER}` : 'none',
         display: 'flex',
         flexDirection: 'column',
         gap: 8,
@@ -451,15 +479,7 @@ function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMes
         </div>
 
         {/* Waveform */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            flex: 1,
-            height: 28,
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, height: 28 }}>
           {bars.map((h, i) => (
             <div
               key={i}
@@ -477,13 +497,7 @@ function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMes
       </div>
 
       {/* Duration */}
-      <div
-        style={{
-          color: TEXT_MUTED,
-          fontSize: 11,
-          fontFamily: 'ui-monospace, monospace',
-        }}
-      >
+      <div style={{ color: p.TEXT_MUTED, fontSize: 11, fontFamily: 'ui-monospace, monospace' }}>
         {duration}
       </div>
 
@@ -541,9 +555,7 @@ function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMes
         transform: `translateX(${translateX}px) scale(${scale})`,
       }}
     >
-      <div style={{ maxWidth: '80%' }}>
-        {content}
-      </div>
+      <div style={{ maxWidth: '80%' }}>{content}</div>
     </div>
   )
 }
@@ -551,10 +563,11 @@ function VoiceMessageBubble({ bars, duration, isBot, enterFrame, fps }: VoiceMes
 // ─── Lyra response content ────────────────────────────────────────────────────
 
 function LyraResponseContent() {
+  const p = usePalette()
   return (
     <div>
       <div style={{ marginBottom: 8 }}>Here's a summary of the article:</div>
-      <div style={{ color: TEXT_SECONDARY, fontWeight: 700, marginBottom: 6 }}>Key Points:</div>
+      <div style={{ color: p.TEXT_SECONDARY, fontWeight: 700, marginBottom: 6 }}>Key Points:</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         {[
           'Uses a hub-and-spoke architecture for isolation',
@@ -567,7 +580,7 @@ function LyraResponseContent() {
           </div>
         ))}
       </div>
-      <div style={{ marginTop: 10, color: TEXT_SECONDARY }}>
+      <div style={{ marginTop: 10, color: p.TEXT_SECONDARY }}>
         Want me to save this to your vault?
       </div>
     </div>
@@ -579,6 +592,8 @@ function LyraResponseContent() {
 export function TelegramChatScene() {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
+  const isDark  = useIsDark()
+  const palette = isDark ? DARK_PALETTE : LIGHT_PALETTE
 
   // Timeline (at 30fps):
   // 0–30   : empty chat header fades in
@@ -590,125 +605,127 @@ export function TelegramChatScene() {
 
   const headerOpacity = interpolate(frame, [0, 20], [0, 1], { extrapolateRight: 'clamp' })
 
-  const showUserMsg    = frame >= 30
-  const showTyping     = frame >= 60 && frame < 120
-  const showBotMsg     = frame >= 120
-  const showUserVoice  = frame >= 210
-  const showBotVoice   = frame >= 250
+  const showUserMsg   = frame >= 30
+  const showTyping    = frame >= 60 && frame < 120
+  const showBotMsg    = frame >= 120
+  const showUserVoice = frame >= 210
+  const showBotVoice  = frame >= 250
 
   return (
-    <AbsoluteFill
-      style={{
-        background: TEAL_BG,
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Header */}
-      <div style={{ opacity: headerOpacity, flexShrink: 0 }}>
-        <ChatHeader />
-      </div>
-
-      {/* Chat area */}
-      <div
+    <PaletteCtx.Provider value={palette}>
+      <AbsoluteFill
         style={{
-          flex: 1,
-          overflowY: 'hidden',
-          padding: '12px 0',
+          background: palette.BG,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-end',
-          gap: 2,
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          overflow: 'hidden',
         }}
       >
-        {showUserMsg && (
-          <UserBubble enterFrame={30} fps={fps}>
-            <div>Hey Lyra, summarize this article for me</div>
-            <div style={{ marginTop: 6 }}>
-              <span style={{ color: LINK_COLOR, fontSize: 12 }}>
-                https://github.com/mickael/lyra/blob/main/README.md
-              </span>
-            </div>
-          </UserBubble>
-        )}
+        {/* Header */}
+        <div style={{ opacity: headerOpacity, flexShrink: 0 }}>
+          <ChatHeader />
+        </div>
 
-        {showTyping && <TypingIndicator enterFrame={60} fps={fps} />}
-
-        {showBotMsg && (
-          <BotBubble enterFrame={120} fps={fps}>
-            <LyraResponseContent />
-          </BotBubble>
-        )}
-
-        {showUserVoice && (
-          <VoiceMessageBubble
-            bars={WAVEFORM_BARS_USER}
-            duration="0:03"
-            isBot={false}
-            enterFrame={210}
-            fps={fps}
-          />
-        )}
-
-        {showBotVoice && (
-          <VoiceMessageBubble
-            bars={WAVEFORM_BARS_BOT}
-            duration="0:05"
-            isBot={true}
-            enterFrame={250}
-            fps={fps}
-          />
-        )}
-      </div>
-
-      {/* Input bar (static decoration) */}
-      <div
-        style={{
-          background: HEADER_BG,
-          borderTop: `1px solid rgba(255,255,255,0.06)`,
-          padding: '10px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          flexShrink: 0,
-        }}
-      >
+        {/* Chat area */}
         <div
           style={{
             flex: 1,
-            background: 'rgba(255,255,255,0.05)',
-            borderRadius: 20,
-            padding: '8px 16px',
-            color: TEXT_MUTED,
-            fontSize: 13,
+            overflow: 'hidden',
+            padding: '12px 0',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            gap: 2,
           }}
         >
-          Message
+          {showUserMsg && (
+            <UserBubble enterFrame={30} fps={fps}>
+              <div>Hey Lyra, summarize this article for me</div>
+              <div style={{ marginTop: 6 }}>
+                <span style={{ color: LINK_COLOR, fontSize: 11, wordBreak: 'break-all' }}>
+                  github.com/mickael/lyra
+                </span>
+              </div>
+            </UserBubble>
+          )}
+
+          {showTyping && <TypingIndicator enterFrame={60} fps={fps} />}
+
+          {showBotMsg && (
+            <BotBubble enterFrame={120} fps={fps}>
+              <LyraResponseContent />
+            </BotBubble>
+          )}
+
+          {showUserVoice && (
+            <VoiceMessageBubble
+              bars={WAVEFORM_BARS_USER}
+              duration="0:03"
+              isBot={false}
+              enterFrame={210}
+              fps={fps}
+            />
+          )}
+
+          {showBotVoice && (
+            <VoiceMessageBubble
+              bars={WAVEFORM_BARS_BOT}
+              duration="0:05"
+              isBot={true}
+              enterFrame={250}
+              fps={fps}
+            />
+          )}
         </div>
+
+        {/* Input bar (static decoration) */}
         <div
           style={{
-            width: 34,
-            height: 34,
-            borderRadius: '50%',
-            background: `${ACCENT_CYAN}22`,
+            background: palette.HEADER_BG,
+            borderTop: `1px solid ${palette.HEADER_BORDER}`,
+            padding: '10px 16px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
+            gap: 10,
+            flexShrink: 0,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M12 18.5V5M5 12L12 5L19 12"
-              stroke={ACCENT_CYAN}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <div
+            style={{
+              flex: 1,
+              background: palette.INPUT_BG,
+              borderRadius: 20,
+              padding: '8px 16px',
+              color: palette.TEXT_MUTED,
+              fontSize: 13,
+            }}
+          >
+            Message
+          </div>
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: '50%',
+              background: `${ACCENT_CYAN}22`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 18.5V5M5 12L12 5L19 12"
+                stroke={ACCENT_CYAN}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </div>
-      </div>
-    </AbsoluteFill>
+      </AbsoluteFill>
+    </PaletteCtx.Provider>
   )
 }

@@ -1,19 +1,43 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
+
+// ─── Theme detection ──────────────────────────────────────────────────────────
+
+function useIsDark() {
+  const [isDark, setIsDark] = useState(true)
+  useEffect(() => {
+    const check = () => {
+      const html = document.documentElement
+      setIsDark(html.classList.contains('dark') || html.getAttribute('data-theme') === 'dark')
+    }
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+  return isDark
+}
 
 // ─── Color tokens (matching VoiceSection.tsx palette) ────────────────────────
 
-const STT_COLOR     = '#ec4899'  // pink
-const TTS_COLOR     = '#06b6d4'  // cyan/teal
-const HUB_COLOR     = '#6366f1'  // indigo
-const AGENT_COLOR   = '#a78bfa'  // violet
-const LLM_COLOR     = '#f59e0b'  // amber
-const OUTPUT_COLOR  = '#34d399'  // emerald
-const BG_COLOR      = '#0d1117'
-const TEXT_COLOR    = '#e8eaed'
-const PANEL_BG      = 'rgba(255,255,255,0.04)'
-const PANEL_BORDER  = 'rgba(255,255,255,0.08)'
+const STT_COLOR    = '#ec4899'  // pink
+const TTS_COLOR    = '#06b6d4'  // cyan/teal
+const HUB_COLOR    = '#6366f1'  // indigo
+const AGENT_COLOR  = '#a78bfa'  // violet
+const LLM_COLOR    = '#f59e0b'  // amber
+const OUTPUT_COLOR = '#34d399'  // emerald
+
+const DARK_BG         = '#0d1117'
+const DARK_TEXT        = '#e8eaed'
+const DARK_PANEL_BG    = 'rgba(255,255,255,0.04)'
+const DARK_PANEL_BORDER = 'rgba(255,255,255,0.08)'
+
+const LIGHT_BG         = '#ffffff'
+const LIGHT_TEXT        = '#1e293b'
+const LIGHT_PANEL_BG    = 'rgba(0,0,0,0.04)'
+const LIGHT_PANEL_BORDER = 'rgba(0,0,0,0.08)'
 
 // ─── Pipeline node definitions ───────────────────────────────────────────────
 
@@ -21,8 +45,8 @@ type PipelineNode = {
   id: string
   label: string
   color: string
-  activeFrame: number   // frame at which this node "lights up"
-  deactiveFrame: number // frame at which it dims back
+  activeFrame: number
+  deactiveFrame: number
 }
 
 // Timeline:
@@ -53,7 +77,7 @@ type WaveformProps = {
   color: string
   width: number
   height: number
-  progress: number  // 0–1 for animated reveal
+  progress: number
 }
 
 function Waveform({ bars, color, width, height, progress }: WaveformProps) {
@@ -150,9 +174,9 @@ type NodeBoxProps = {
 }
 
 function NodeBox({ x, y, w, h, label, color, active, activeProgress }: NodeBoxProps) {
-  const glowOpacity = active ? interpolate(activeProgress, [0, 1], [0, 0.6]) : 0
+  const glowOpacity   = active ? interpolate(activeProgress, [0, 1], [0, 0.6]) : 0
   const borderOpacity = active ? interpolate(activeProgress, [0, 1], [0.3, 1]) : 0.2
-  const bgOpacity = active ? interpolate(activeProgress, [0, 1], [0.05, 0.2]) : 0.05
+  const bgOpacity     = active ? interpolate(activeProgress, [0, 1], [0.05, 0.2]) : 0.05
 
   return (
     <g>
@@ -212,17 +236,11 @@ function FadingText({ children, enterFrame, fps, style }: FadingTextProps) {
     fps,
     config: { damping: 20, stiffness: 200, mass: 0.8 },
   })
-  const opacity   = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateY = interpolate(progress, [0, 1], [8, 0])
 
   return (
-    <div
-      style={{
-        opacity,
-        transform: `translateY(${translateY}px)`,
-        ...style,
-      }}
-    >
+    <div style={{ opacity, transform: `translateY(${translateY}px)`, ...style }}>
       {children}
     </div>
   )
@@ -232,7 +250,13 @@ function FadingText({ children, enterFrame, fps, style }: FadingTextProps) {
 
 export function VoicePipelineScene() {
   const frame = useCurrentFrame()
-  const { fps, width } = useVideoConfig() // height unused — fixed layout
+  const { fps, width } = useVideoConfig()
+  const isDark = useIsDark()
+
+  const BG_COLOR     = isDark ? DARK_BG          : LIGHT_BG
+  const TEXT_COLOR   = isDark ? DARK_TEXT         : LIGHT_TEXT
+  const PANEL_BG     = isDark ? DARK_PANEL_BG     : LIGHT_PANEL_BG
+  const PANEL_BORDER = isDark ? DARK_PANEL_BORDER : LIGHT_PANEL_BORDER
 
   // ── Layout constants ──
   const SVG_W = width - 40
@@ -241,16 +265,14 @@ export function VoicePipelineScene() {
   const NODE_H = 36
   const NODE_Y = (SVG_H - NODE_H) / 2
 
-  // Distribute nodes evenly across width
   const TOTAL_NODES = NODES.length
   const SPACING = SVG_W / (TOTAL_NODES + 1)
 
   const nodePositions = NODES.map((_, i) => ({
-    x: SPACING * (i + 1) - NODE_W / 2,
+    x:  SPACING * (i + 1) - NODE_W / 2,
     cx: SPACING * (i + 1),
   }))
 
-  // ── Node active progress ──
   function nodeActiveProgress(node: PipelineNode) {
     return spring({
       frame: frame - node.activeFrame,
@@ -262,14 +284,13 @@ export function VoicePipelineScene() {
   const isActive = (node: PipelineNode) =>
     frame >= node.activeFrame && frame < node.deactiveFrame
 
-  // ── Section visibility ──
   const showInWaveform  = frame >= 0
   const showText        = frame >= 60
   const showOutText     = frame >= 180
   const showOutWaveform = frame >= 240
   const showSentLabel   = frame >= 270
 
-  const inWaveProgress  = interpolate(frame, [0, 30], [0, 1], { extrapolateRight: 'clamp' })
+  const inWaveProgress  = interpolate(frame, [0, 30],   [0, 1], { extrapolateRight: 'clamp' })
   const outWaveProgress = interpolate(frame, [240, 270], [0, 1], { extrapolateRight: 'clamp' })
 
   return (
@@ -346,10 +367,9 @@ export function VoicePipelineScene() {
           aria-label="Voice pipeline: STT → Hub → Agent → LLM → TTS"
           role="img"
         >
-          {/* Connections between nodes */}
           {NODES.slice(0, -1).map((node, i) => {
-            const fromCx  = nodePositions[i]!.cx + NODE_W / 2
-            const toCx    = nodePositions[i + 1]!.cx - NODE_W / 2
+            const fromCx      = nodePositions[i]!.cx + NODE_W / 2
+            const toCx        = nodePositions[i + 1]!.cx - NODE_W / 2
             const nodeIsActive = isActive(node) || isActive(NODES[i + 1]!)
 
             return (
@@ -365,10 +385,9 @@ export function VoicePipelineScene() {
             )
           })}
 
-          {/* Node boxes */}
           {NODES.map((node, i) => {
-            const pos = nodePositions[i]!
-            const active = isActive(node)
+            const pos      = nodePositions[i]!
+            const active   = isActive(node)
             const progress = nodeActiveProgress(node)
 
             return (

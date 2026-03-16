@@ -1,56 +1,111 @@
 'use client'
 
+import { createContext, useContext, useEffect, useState } from 'react'
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
 
-// ─── Color tokens (Discord dark theme) ───────────────────────────────────────
+// ─── Theme detection ──────────────────────────────────────────────────────────
 
-const BG_PRIMARY   = '#36393f'
-const BG_SECONDARY = '#2f3136'
-const TEXT_PRIMARY  = '#dcddde'
-const TEXT_MUTED    = '#72767d'
-const TEXT_HEADER   = '#ffffff'
-const BLURPLE       = '#5865f2'
-const BOT_BADGE_BG  = '#5865f2'
-const EMBED_GREEN   = '#4ade80'
-const EMBED_AMBER   = '#fb923c'
-const EMBED_PURPLE  = '#a78bfa'
+function useIsDark() {
+  const [isDark, setIsDark] = useState(true)
+  useEffect(() => {
+    const check = () => {
+      const html = document.documentElement
+      setIsDark(html.classList.contains('dark') || html.getAttribute('data-theme') === 'dark')
+    }
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+  return isDark
+}
+
+// ─── Color palettes ───────────────────────────────────────────────────────────
+
+const DARK_PALETTE = {
+  BG_PRIMARY:   '#36393f',
+  BG_SECONDARY: '#2f3136',
+  TEXT_PRIMARY: '#dcddde',
+  TEXT_MUTED:   '#72767d',
+  TEXT_HEADER:  '#ffffff',
+  INPUT_BG:     '#40444b',
+  INPUT_TEXT:   '#72767d',
+  BORDER:       'rgba(0,0,0,0.3)',
+}
+
+const LIGHT_PALETTE = {
+  BG_PRIMARY:   '#ffffff',
+  BG_SECONDARY: '#f2f3f5',
+  TEXT_PRIMARY: '#2e3338',
+  TEXT_MUTED:   '#747f8d',
+  TEXT_HEADER:  '#060607',
+  INPUT_BG:     '#ebedef',
+  INPUT_TEXT:   '#747f8d',
+  BORDER:       'rgba(0,0,0,0.08)',
+}
+
+type Palette = typeof DARK_PALETTE
+
+const PaletteCtx = createContext<Palette>(DARK_PALETTE)
+const usePalette = () => useContext(PaletteCtx)
+
+// ─── Shared constants ─────────────────────────────────────────────────────────
+
+const BLURPLE      = '#5865f2'
+const BOT_BADGE_BG = '#5865f2'
+const EMBED_GREEN  = '#4ade80'
+const EMBED_AMBER  = '#fb923c'
+const EMBED_PURPLE = '#a78bfa'
 
 // ─── Channel header ───────────────────────────────────────────────────────────
 
 function ChannelHeader() {
+  const p = usePalette()
   return (
-    <div
-      style={{
-        background: BG_PRIMARY,
-        borderBottom: `1px solid rgba(0,0,0,0.3)`,
-        padding: '12px 16px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-        flexShrink: 0,
-      }}
-    >
-      <span style={{ color: TEXT_MUTED, fontSize: 20, fontWeight: 700 }}>#</span>
-      <div>
+    <div style={{ flexShrink: 0 }}>
+      {/* Server name bar */}
+      <div
+        style={{
+          background: p.BG_SECONDARY,
+          borderBottom: `1px solid ${p.BORDER}`,
+          padding: '10px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
         <span
           style={{
-            color: TEXT_HEADER,
-            fontSize: 15,
+            color: p.TEXT_HEADER,
+            fontSize: 14,
             fontWeight: 700,
             fontFamily: 'system-ui, sans-serif',
           }}
         >
-          general
+          My Server
         </span>
+      </div>
+      {/* Channel name bar */}
+      <div
+        style={{
+          background: p.BG_PRIMARY,
+          borderBottom: `1px solid ${p.BORDER}`,
+          padding: '8px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
+        <span style={{ color: p.TEXT_MUTED, fontSize: 18, fontWeight: 700 }}>#</span>
         <span
           style={{
-            color: TEXT_MUTED,
-            fontSize: 11,
+            color: p.TEXT_HEADER,
+            fontSize: 14,
+            fontWeight: 600,
             fontFamily: 'system-ui, sans-serif',
-            marginLeft: 8,
           }}
         >
-          My Server
+          general
         </span>
       </div>
     </div>
@@ -114,10 +169,11 @@ function BotBadge() {
 // ─── Timestamp ───────────────────────────────────────────────────────────────
 
 function Timestamp({ label }: { label: string }) {
+  const p = usePalette()
   return (
     <span
       style={{
-        color: TEXT_MUTED,
+        color: p.TEXT_MUTED,
         fontSize: 10,
         fontFamily: 'system-ui, sans-serif',
         marginLeft: 8,
@@ -142,6 +198,7 @@ type UserMessageProps = {
 }
 
 function UserMessage({ username, avatarColor, initials, time, children, enterFrame, fps }: UserMessageProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -149,7 +206,7 @@ function UserMessage({ username, avatarColor, initials, time, children, enterFra
     config: { damping: 20, stiffness: 220, mass: 0.7 },
   })
 
-  const opacity   = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateY = interpolate(progress, [0, 1], [12, 0])
 
   return (
@@ -179,7 +236,7 @@ function UserMessage({ username, avatarColor, initials, time, children, enterFra
         </div>
         <div
           style={{
-            color: TEXT_PRIMARY,
+            color: p.TEXT_PRIMARY,
             fontSize: 14,
             fontFamily: 'system-ui, sans-serif',
             lineHeight: 1.5,
@@ -209,10 +266,11 @@ type EmbedProps = {
 }
 
 function DiscordEmbed({ title, accentColor, fields }: EmbedProps) {
+  const p = usePalette()
   return (
     <div
       style={{
-        background: BG_SECONDARY,
+        background: p.BG_SECONDARY,
         borderRadius: 4,
         borderLeft: `4px solid ${accentColor}`,
         padding: '10px 14px',
@@ -222,7 +280,7 @@ function DiscordEmbed({ title, accentColor, fields }: EmbedProps) {
     >
       <div
         style={{
-          color: TEXT_HEADER,
+          color: p.TEXT_HEADER,
           fontSize: 14,
           fontWeight: 700,
           fontFamily: 'system-ui, sans-serif',
@@ -236,7 +294,7 @@ function DiscordEmbed({ title, accentColor, fields }: EmbedProps) {
           <div key={i}>
             <div
               style={{
-                color: TEXT_MUTED,
+                color: p.TEXT_MUTED,
                 fontSize: 11,
                 fontWeight: 700,
                 fontFamily: 'ui-monospace, monospace',
@@ -249,7 +307,7 @@ function DiscordEmbed({ title, accentColor, fields }: EmbedProps) {
             </div>
             <div
               style={{
-                color: f.valueColor ?? TEXT_PRIMARY,
+                color: f.valueColor ?? p.TEXT_PRIMARY,
                 fontSize: 13,
                 fontFamily: 'ui-monospace, monospace',
                 fontWeight: 600,
@@ -274,6 +332,7 @@ type BotMessageProps = {
 }
 
 function BotMessage({ time, children, enterFrame, fps }: BotMessageProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -281,7 +340,7 @@ function BotMessage({ time, children, enterFrame, fps }: BotMessageProps) {
     config: { damping: 20, stiffness: 220, mass: 0.7 },
   })
 
-  const opacity   = interpolate(progress, [0, 1], [0, 1])
+  const opacity    = interpolate(progress, [0, 1], [0, 1])
   const translateY = interpolate(progress, [0, 1], [12, 0])
 
   return (
@@ -329,7 +388,9 @@ function BotMessage({ time, children, enterFrame, fps }: BotMessageProps) {
         </div>
 
         {/* Content */}
-        <div style={{ marginTop: 2 }}>{children}</div>
+        <div style={{ marginTop: 2, color: p.TEXT_PRIMARY, fontSize: 14, fontFamily: 'system-ui, sans-serif' }}>
+          {children}
+        </div>
       </div>
     </div>
   )
@@ -344,6 +405,7 @@ type TypingIndicatorProps = {
 }
 
 function TypingIndicator({ username, enterFrame, fps }: TypingIndicatorProps) {
+  const p = usePalette()
   const frame = useCurrentFrame()
   const progress = spring({
     frame: frame - enterFrame,
@@ -375,7 +437,7 @@ function TypingIndicator({ username, enterFrame, fps }: TypingIndicatorProps) {
               width: 5,
               height: 5,
               borderRadius: '50%',
-              background: TEXT_MUTED,
+              background: p.TEXT_MUTED,
               transform: `translateY(${dotBounce(offset)}px)`,
             }}
           />
@@ -383,7 +445,7 @@ function TypingIndicator({ username, enterFrame, fps }: TypingIndicatorProps) {
       </div>
       <span
         style={{
-          color: TEXT_MUTED,
+          color: p.TEXT_MUTED,
           fontSize: 12,
           fontFamily: 'system-ui, sans-serif',
           fontStyle: 'italic',
@@ -398,6 +460,7 @@ function TypingIndicator({ username, enterFrame, fps }: TypingIndicatorProps) {
 // ─── Smart routing table ──────────────────────────────────────────────────────
 
 function RoutingTable() {
+  const p = usePalette()
   const rows = [
     { tier: 'trivial',  example: 'ping / status', model: 'haiku',  color: EMBED_GREEN },
     { tier: 'simple',   example: 'summarize',     model: 'haiku',  color: '#2dd4bf' },
@@ -408,7 +471,7 @@ function RoutingTable() {
   return (
     <div
       style={{
-        background: BG_SECONDARY,
+        background: p.BG_SECONDARY,
         borderRadius: 4,
         borderLeft: `4px solid ${EMBED_PURPLE}`,
         padding: '10px 14px',
@@ -418,7 +481,7 @@ function RoutingTable() {
     >
       <div
         style={{
-          color: TEXT_HEADER,
+          color: p.TEXT_HEADER,
           fontSize: 13,
           fontWeight: 700,
           fontFamily: 'system-ui, sans-serif',
@@ -436,14 +499,14 @@ function RoutingTable() {
           gap: 4,
           marginBottom: 6,
           paddingBottom: 6,
-          borderBottom: `1px solid rgba(255,255,255,0.06)`,
+          borderBottom: `1px solid ${p.BORDER}`,
         }}
       >
         {['TIER', 'EXAMPLE', 'MODEL'].map((h) => (
           <span
             key={h}
             style={{
-              color: TEXT_MUTED,
+              color: p.TEXT_MUTED,
               fontSize: 10,
               fontWeight: 700,
               fontFamily: 'ui-monospace, monospace',
@@ -467,33 +530,13 @@ function RoutingTable() {
             alignItems: 'center',
           }}
         >
-          <span
-            style={{
-              color: r.color,
-              fontSize: 11,
-              fontWeight: 700,
-              fontFamily: 'ui-monospace, monospace',
-            }}
-          >
+          <span style={{ color: r.color, fontSize: 11, fontWeight: 700, fontFamily: 'ui-monospace, monospace' }}>
             {r.tier}
           </span>
-          <span
-            style={{
-              color: TEXT_MUTED,
-              fontSize: 11,
-              fontFamily: 'ui-monospace, monospace',
-            }}
-          >
+          <span style={{ color: p.TEXT_MUTED, fontSize: 11, fontFamily: 'ui-monospace, monospace' }}>
             {r.example}
           </span>
-          <span
-            style={{
-              color: r.color,
-              fontSize: 11,
-              fontFamily: 'ui-monospace, monospace',
-              fontWeight: 600,
-            }}
-          >
+          <span style={{ color: r.color, fontSize: 11, fontFamily: 'ui-monospace, monospace', fontWeight: 600 }}>
             {r.model}
           </span>
         </div>
@@ -507,6 +550,8 @@ function RoutingTable() {
 export function DiscordChatScene() {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
+  const isDark  = useIsDark()
+  const palette = isDark ? DARK_PALETTE : LIGHT_PALETTE
 
   // Timeline (at 30fps):
   // 0–30   : channel header fades in
@@ -526,123 +571,109 @@ export function DiscordChatScene() {
   const showBotRouting = frame >= 230
 
   return (
-    <AbsoluteFill
-      style={{
-        background: BG_PRIMARY,
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Header */}
-      <div style={{ opacity: headerOpacity, flexShrink: 0 }}>
-        <ChannelHeader />
-      </div>
-
-      {/* Messages area */}
-      <div
+    <PaletteCtx.Provider value={palette}>
+      <AbsoluteFill
         style={{
-          flex: 1,
-          overflowY: 'hidden',
-          paddingTop: 16,
-          paddingBottom: 8,
+          background: palette.BG_PRIMARY,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-end',
-          gap: 2,
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          overflow: 'hidden',
         }}
       >
-        {showUser1Msg && (
-          <UserMessage
-            username="mickael"
-            avatarColor="#f472b6"
-            initials="M"
-            time="Today at 14:32"
-            enterFrame={30}
-            fps={fps}
-          >
-            <span style={{ color: '#5865f2', fontWeight: 600 }}>@Lyra</span>
-            {' '}what's the circuit breaker status?
-          </UserMessage>
-        )}
+        {/* Header */}
+        <div style={{ opacity: headerOpacity, flexShrink: 0 }}>
+          <ChannelHeader />
+        </div>
 
-        {showTyping1 && (
-          <TypingIndicator username="Lyra" enterFrame={60} fps={fps} />
-        )}
-
-        {showBotEmbed && (
-          <BotMessage time="Today at 14:32" enterFrame={100} fps={fps}>
-            <div
-              style={{
-                color: TEXT_PRIMARY,
-                fontSize: 14,
-                fontFamily: 'system-ui, sans-serif',
-              }}
+        {/* Messages area */}
+        <div
+          style={{
+            flex: 1,
+            overflow: 'hidden',
+            paddingTop: 16,
+            paddingBottom: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            gap: 2,
+          }}
+        >
+          {showUser1Msg && (
+            <UserMessage
+              username="mickael"
+              avatarColor="#f472b6"
+              initials="M"
+              time="Today at 14:32"
+              enterFrame={30}
+              fps={fps}
             >
+              <span style={{ color: '#5865f2', fontWeight: 600 }}>@Lyra</span>
+              {' '}what's the circuit breaker status?
+            </UserMessage>
+          )}
+
+          {showTyping1 && (
+            <TypingIndicator username="Lyra" enterFrame={60} fps={fps} />
+          )}
+
+          {showBotEmbed && (
+            <BotMessage time="Today at 14:32" enterFrame={100} fps={fps}>
               Circuit breaker status report:
-            </div>
-            <DiscordEmbed
-              title="Circuit Breaker Status"
-              accentColor={EMBED_GREEN}
-              fields={[
-                { name: 'Anthropic API', value: '🟢 CLOSED',    valueColor: EMBED_GREEN },
-                { name: 'Ollama',        value: '🟡 HALF_OPEN', valueColor: EMBED_AMBER },
-                { name: 'Last Failure',  value: '2m ago',       valueColor: TEXT_MUTED },
-                { name: 'Failures (5m)', value: '1 / 5',        valueColor: TEXT_PRIMARY },
-              ]}
-            />
-          </BotMessage>
-        )}
+              <DiscordEmbed
+                title="Circuit Breaker Status"
+                accentColor={EMBED_GREEN}
+                fields={[
+                  { name: 'Anthropic API', value: '🟢 CLOSED',    valueColor: EMBED_GREEN },
+                  { name: 'Ollama',        value: '🟡 HALF_OPEN', valueColor: EMBED_AMBER },
+                  { name: 'Last Failure',  value: '2m ago',       valueColor: palette.TEXT_MUTED },
+                  { name: 'Failures (5m)', value: '1 / 5',        valueColor: palette.TEXT_PRIMARY },
+                ]}
+              />
+            </BotMessage>
+          )}
 
-        {showUser2Msg && (
-          <UserMessage
-            username="alice"
-            avatarColor="#818cf8"
-            initials="A"
-            time="Today at 14:33"
-            enterFrame={180}
-            fps={fps}
-          >
-            Cool, can you explain the routing?
-          </UserMessage>
-        )}
-
-        {showTyping2 && (
-          <TypingIndicator username="Lyra" enterFrame={210} fps={fps} />
-        )}
-
-        {showBotRouting && (
-          <BotMessage time="Today at 14:33" enterFrame={230} fps={fps}>
-            <div
-              style={{
-                color: TEXT_PRIMARY,
-                fontSize: 14,
-                fontFamily: 'system-ui, sans-serif',
-              }}
+          {showUser2Msg && (
+            <UserMessage
+              username="alice"
+              avatarColor="#818cf8"
+              initials="A"
+              time="Today at 14:33"
+              enterFrame={180}
+              fps={fps}
             >
-              Smart routing picks the cheapest model that can handle the task:
-            </div>
-            <RoutingTable />
-          </BotMessage>
-        )}
-      </div>
+              Cool, can you explain the routing?
+            </UserMessage>
+          )}
 
-      {/* Input bar (static decoration) */}
-      <div
-        style={{
-          background: BG_SECONDARY,
-          margin: '0 16px 16px',
-          borderRadius: 8,
-          padding: '11px 16px',
-          color: TEXT_MUTED,
-          fontSize: 14,
-          fontFamily: 'system-ui, sans-serif',
-          flexShrink: 0,
-        }}
-      >
-        Message #general
-      </div>
-    </AbsoluteFill>
+          {showTyping2 && (
+            <TypingIndicator username="Lyra" enterFrame={210} fps={fps} />
+          )}
+
+          {showBotRouting && (
+            <BotMessage time="Today at 14:33" enterFrame={230} fps={fps}>
+              Smart routing picks the cheapest model that can handle the task:
+              <RoutingTable />
+            </BotMessage>
+          )}
+        </div>
+
+        {/* Input bar (static decoration) */}
+        <div
+          style={{
+            background: palette.INPUT_BG,
+            margin: '0 16px 16px',
+            borderRadius: 8,
+            padding: '11px 16px',
+            color: palette.INPUT_TEXT,
+            fontSize: 14,
+            fontFamily: 'system-ui, sans-serif',
+            flexShrink: 0,
+          }}
+        >
+          Message #general
+        </div>
+      </AbsoluteFill>
+    </PaletteCtx.Provider>
   )
 }
