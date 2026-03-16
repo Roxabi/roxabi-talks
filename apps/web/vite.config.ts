@@ -37,6 +37,11 @@ const config = defineConfig(async () => ({
   server: { port: 3000 },
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: await getPlugins(),
+  ssr: {
+    // Remotion is client-only — exclude from SSR bundle to avoid parse errors
+    noExternal: [],
+    external: ['remotion', '@remotion/player', '@remotion/media-utils'],
+  },
 }))
 
 export default config

@@ -33,6 +33,8 @@ const bundledLangs = {
   dockerfile: () => import('@shikijs/langs/dockerfile'),
   ini: () => import('@shikijs/langs/ini'),
   properties: () => import('@shikijs/langs/ini'),
+  python: () => import('@shikijs/langs/python'),
+  py: () => import('@shikijs/langs/python'),
 }
 
 const bundledThemes = {
