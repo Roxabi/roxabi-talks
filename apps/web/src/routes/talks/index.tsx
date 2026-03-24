@@ -1,6 +1,6 @@
 import { AnimatedSection, Card, CardDescription, CardHeader, CardTitle } from '@repo/ui'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ChevronRight, Code2, GitBranch, Network, Sparkles, Sword, TrendingUp } from 'lucide-react'
+import { ChevronRight, Code2, Flame, GitBranch, Sparkles, Sword, TrendingUp } from 'lucide-react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { m } from '@/paraglide/messages'
@@ -38,7 +38,7 @@ export function TalksIndex() {
         </h1>
 
         {/* Top row: standalone talks */}
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link to="/talks/claude-code" className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
             <Card className="h-full transition-[box-shadow,border-color] duration-300 hover:shadow-lg hover:border-primary/40">
               <CardHeader className="p-6">
@@ -72,6 +72,23 @@ export function TalksIndex() {
               </CardHeader>
             </Card>
           </Link>
+
+          <Link to="/talks/solo-builder" className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            <Card className="h-full transition-[box-shadow,border-color] duration-300 hover:shadow-lg hover:border-orange-500/40">
+              <CardHeader className="p-6">
+                <div className="mb-4 flex size-11 items-center justify-center rounded-lg bg-orange-500/10 text-orange-500">
+                  <Flame className="size-5" aria-hidden="true" />
+                </div>
+                <div className="flex items-start justify-between gap-2">
+                  <CardTitle>{m.talk_index_solobuilder_title()}</CardTitle>
+                  <ChevronRight className="size-4 shrink-0 text-muted-foreground/40 motion-safe:transition-transform motion-safe:duration-200 group-hover:translate-x-0.5 group-hover:text-orange-500 mt-0.5" aria-hidden="true" />
+                </div>
+                <CardDescription className="mt-2">
+                  {m.talk_index_solobuilder_subtitle()}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
         </div>
 
         {/* Lyra group */}
@@ -81,7 +98,7 @@ export function TalksIndex() {
             <p className="text-xs text-muted-foreground mt-0.5">{m.talk_index_lyra_group_subtitle()}</p>
           </div>
 
-        <div className="grid gap-3 sm:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-3">
           <Link to="/talks/lyra-story" className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
             <Card className="h-full transition-[box-shadow,border-color] duration-300 hover:shadow-lg hover:border-chart-2/40">
               <CardHeader className="p-6">
@@ -133,22 +150,6 @@ export function TalksIndex() {
             </Card>
           </Link>
 
-          <Link to="/talks/lyra-intro" className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            <Card className="h-full transition-[box-shadow,border-color] duration-300 hover:shadow-lg hover:border-cyan-500/40">
-              <CardHeader className="p-6">
-                <div className="mb-4 flex size-11 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-500">
-                  <Network className="size-5" aria-hidden="true" />
-                </div>
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle>{m.talk_index_lyra_intro_title()}</CardTitle>
-                  <ChevronRight className="size-4 shrink-0 text-muted-foreground/40 motion-safe:transition-transform motion-safe:duration-200 group-hover:translate-x-0.5 group-hover:text-cyan-500 mt-0.5" aria-hidden="true" />
-                </div>
-                <CardDescription className="mt-2">
-                  {m.talk_index_lyra_intro_subtitle()}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
         </div>
         </div>
       </AnimatedSection>
