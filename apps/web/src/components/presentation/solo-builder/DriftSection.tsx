@@ -32,15 +32,19 @@ export function DriftSection() {
         {/* The altitude problem */}
         <AnimatedSection>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4 text-center">
-              <p className="text-3xl mb-2">🏔️</p>
-              <p className="font-mono text-sm text-[var(--sb-text)] font-semibold">{m.talk_sb_drift_altitude()}</p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_drift_altitude_sub()}</p>
+            <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4 flex items-start gap-3">
+              <span className="text-3xl shrink-0">🏔️</span>
+              <div>
+                <p className="font-mono text-sm text-[var(--sb-text)] font-semibold">{m.talk_sb_drift_altitude()}</p>
+                <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_drift_altitude_sub()}</p>
+              </div>
             </div>
-            <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4 text-center">
-              <p className="text-3xl mb-2">🔬</p>
-              <p className="font-mono text-sm text-[var(--sb-text)] font-semibold">{m.talk_sb_drift_detail()}</p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_drift_detail_sub()}</p>
+            <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4 flex items-start gap-3">
+              <span className="text-3xl shrink-0">🔬</span>
+              <div>
+                <p className="font-mono text-sm text-[var(--sb-text)] font-semibold">{m.talk_sb_drift_detail()}</p>
+                <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_drift_detail_sub()}</p>
+              </div>
             </div>
           </div>
         </AnimatedSection>
@@ -111,41 +115,6 @@ export function DriftSection() {
                 <p className="text-sm text-[var(--sb-text)]/70">{m.talk_sb_drift_step4()}</p>
               </div>
             </div>
-          </div>
-        </AnimatedSection>
-
-        {/* 50/50 */}
-        <AnimatedSection>
-          <div className="flex items-center gap-4">
-            <div className="flex-1 rounded-lg bg-[var(--sb-accent)]/20 p-4 text-center">
-              <p className="font-mono text-2xl font-bold text-[var(--sb-accent)]">50%</p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_features()}</p>
-            </div>
-            <div className="flex-1 rounded-lg bg-[var(--sb-teal)]/20 p-4 text-center">
-              <p className="font-mono text-2xl font-bold text-[var(--sb-teal)]">50%</p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_refacto()}</p>
-            </div>
-          </div>
-        </AnimatedSection>
-
-        {/* Dashboard teaser */}
-        <AnimatedSection>
-          <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-5">
-            <p className="font-mono text-xs text-[var(--sb-accent)] uppercase tracking-wider mb-3">{m.talk_sb_drift_dashboard_title()}</p>
-            <div className="flex gap-2">
-              {['PROD', 'CI/CD', 'PR', 'ISSUES'].map((label, i) => (
-                <div
-                  key={label}
-                  className="flex-1 rounded border border-[var(--sb-border)] p-2 text-center"
-                  style={{ opacity: 1 - i * 0.15 }}
-                >
-                  <p className={`font-mono text-[9px] uppercase ${i === 0 ? 'text-[var(--sb-red)]' : 'text-[var(--sb-dim)]'}`}>
-                    {label}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-3">{m.talk_sb_drift_dashboard_desc()}</p>
           </div>
         </AnimatedSection>
 

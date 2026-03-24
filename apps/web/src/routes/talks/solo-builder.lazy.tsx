@@ -5,6 +5,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { ClosingSection } from '@/components/presentation/solo-builder/ClosingSection'
 import { DriftSection } from '@/components/presentation/solo-builder/DriftSection'
+import { DriftSteeringSection } from '@/components/presentation/solo-builder/DriftSteeringSection'
 import { IntroSection } from '@/components/presentation/solo-builder/IntroSection'
 import { PreviouslySection } from '@/components/presentation/solo-builder/PreviouslySection'
 import { LessonsSection } from '@/components/presentation/solo-builder/LessonsSection'
@@ -14,7 +15,11 @@ import { colorMap, SOLO_SECTION_IDS, soloSections } from '@/components/presentat
 import { StackSection } from '@/components/presentation/solo-builder/StackSection'
 import { ToolingSection } from '@/components/presentation/solo-builder/ToolingSection'
 import { ToolShowcaseSection } from '@/components/presentation/solo-builder/ToolShowcaseSection'
+import { BreathingSection } from '@/components/presentation/solo-builder/BreathingSection'
+import { ProductMethodsSection } from '@/components/presentation/solo-builder/ProductMethodsSection'
+import { SlideHint, type HintLink } from '@/components/presentation/solo-builder/SlideHint'
 import { VelocitySection } from '@/components/presentation/solo-builder/VelocitySection'
+import { VelocityVisualsSection } from '@/components/presentation/solo-builder/VelocityVisualsSection'
 import { SectionContainer } from '@/components/presentation/SectionContainer'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { useSectionTracking } from '@/hooks/useSectionTracking'
@@ -26,6 +31,24 @@ export const Route = createLazyFileRoute('/talks/solo-builder')({
 
 const sectionIds = SOLO_SECTION_IDS
 
+/** Per-slide reference links — fill in as needed */
+const slideHints: Record<string, HintLink[]> = {
+  intro: [],
+  previously: [],
+  stack: [],
+  tooling: [],
+  showcase: [],
+  velocity: [],
+  visuals: [],
+  breathing: [],
+  product: [],
+  methods: [],
+  drift: [],
+  steering: [],
+  lessons: [],
+  closing: [],
+}
+
 export function SoloBuilderPresentation() {
   const sections = useMemo(
     () => [
@@ -35,8 +58,12 @@ export function SoloBuilderPresentation() {
       { id: 'tooling', label: m.talk_sb_nav_tooling() },
       { id: 'showcase', label: m.talk_sb_nav_showcase() },
       { id: 'velocity', label: m.talk_sb_nav_velocity() },
+      { id: 'visuals', label: m.talk_sb_nav_visuals() },
+      { id: 'breathing', label: '·' },
       { id: 'product', label: m.talk_sb_nav_product() },
+      { id: 'methods', label: m.talk_sb_nav_methods() },
       { id: 'drift', label: m.talk_sb_nav_drift() },
+      { id: 'steering', label: m.talk_sb_nav_steering() },
       { id: 'lessons', label: m.talk_sb_nav_lessons() },
       { id: 'closing', label: m.talk_sb_nav_closing() },
     ],
@@ -110,49 +137,81 @@ export function SoloBuilderPresentation() {
       >
         <SectionContainer id="intro" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,var(--sb-glow)_0%,transparent_100%)]">
           <IntroSection />
+          <SlideHint links={slideHints.intro ?? []} />
         </SectionContainer>
 
         <SectionContainer id="previously" className="relative">
           <PreviouslySection />
+          <SlideHint links={slideHints.previously ?? []} />
         </SectionContainer>
 
         <SectionContainer id="stack" className="relative">
           <SectionChrome sectionId="stack" />
           <StackSection />
+          <SlideHint links={slideHints.stack ?? []} />
         </SectionContainer>
 
         <SectionContainer id="tooling" className="relative">
           <SectionChrome sectionId="tooling" />
           <ToolingSection />
+          <SlideHint links={slideHints.tooling ?? []} />
         </SectionContainer>
 
         <SectionContainer id="showcase" className="relative">
           <SectionChrome sectionId="showcase" />
           <ToolShowcaseSection />
+          <SlideHint links={slideHints.showcase ?? []} />
         </SectionContainer>
 
         <SectionContainer id="velocity" className="relative">
           <SectionChrome sectionId="velocity" />
           <VelocitySection />
+          <SlideHint links={slideHints.velocity ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="visuals" className="relative">
+          <SectionChrome sectionId="visuals" />
+          <VelocityVisualsSection />
+          <SlideHint links={slideHints.visuals ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="breathing" className="relative">
+          <BreathingSection />
         </SectionContainer>
 
         <SectionContainer id="product" className="relative">
           <SectionChrome sectionId="product" />
           <ProductSection />
+          <SlideHint links={slideHints.product ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="methods" className="relative">
+          <SectionChrome sectionId="methods" />
+          <ProductMethodsSection />
+          <SlideHint links={slideHints.methods ?? []} />
         </SectionContainer>
 
         <SectionContainer id="drift" className="relative">
           <SectionChrome sectionId="drift" />
           <DriftSection />
+          <SlideHint links={slideHints.drift ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="steering" className="relative">
+          <SectionChrome sectionId="steering" />
+          <DriftSteeringSection />
+          <SlideHint links={slideHints.steering ?? []} />
         </SectionContainer>
 
         <SectionContainer id="lessons" className="relative">
           <SectionChrome sectionId="lessons" />
           <LessonsSection />
+          <SlideHint links={slideHints.lessons ?? []} />
         </SectionContainer>
 
         <SectionContainer id="closing" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,var(--sb-glow)_0%,transparent_100%)]">
           <ClosingSection />
+          <SlideHint links={slideHints.closing ?? []} />
         </SectionContainer>
       </div>
     </div>

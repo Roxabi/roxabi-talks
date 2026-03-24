@@ -110,25 +110,21 @@ export function VelocitySection() {
           </div>
         </AnimatedSection>
 
-        {/* Make Visuals */}
+        {/* Rprod. + Seeds */}
         <AnimatedSection>
-          <div className="rounded-lg border border-[var(--sb-accent)]/30 bg-[var(--sb-surface)] p-5">
-            <div className="flex items-baseline justify-between mb-3">
-              <span className="font-mono text-sm text-[var(--sb-accent)] font-semibold">make visuals</span>
-              <span className="font-mono text-[10px] text-[var(--sb-dim)]">~/.agent/diagrams/</span>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border border-[var(--sb-accent)]/30 bg-[var(--sb-surface)] p-4 flex items-start gap-3">
+              <span className="text-xl">🎬</span>
+              <div>
+                <p className="font-mono text-sm text-[var(--sb-accent)] font-semibold">{m.talk_sb_velocity_rprod()}</p>
+                <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_velocity_rprod_desc()}</p>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="rounded-lg border border-[var(--sb-accent)]/30 bg-[var(--sb-surface)] p-4 flex items-start gap-3">
+              <span className="text-xl">🎲</span>
               <div>
-                <p className="font-mono text-2xl font-bold text-[var(--sb-text)]">56</p>
-                <p className="font-mono text-[9px] text-[var(--sb-dim)] uppercase">{m.talk_sb_velocity_html_files()}</p>
-              </div>
-              <div>
-                <p className="font-mono text-2xl font-bold text-[var(--sb-text)]">109</p>
-                <p className="font-mono text-[9px] text-[var(--sb-dim)] uppercase">{m.talk_sb_velocity_manifest()}</p>
-              </div>
-              <div>
-                <p className="font-mono text-2xl font-bold text-[var(--sb-text)]">8</p>
-                <p className="font-mono text-[9px] text-[var(--sb-dim)] uppercase">{m.talk_sb_velocity_categories()}</p>
+                <p className="font-mono text-sm text-[var(--sb-accent)] font-semibold">{m.talk_sb_velocity_seeds()}</p>
+                <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_velocity_seeds_desc()}</p>
               </div>
             </div>
           </div>

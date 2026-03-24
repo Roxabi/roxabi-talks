@@ -21,12 +21,6 @@ const MAKE_TARGETS = [
   { cmd: 'make remote status', desc: 'prod supervisor' },
 ]
 
-const VISUALS_EXAMPLES = [
-  { name: 'hub-spoke.html', cat: 'architecture' },
-  { name: 'agent-lifecycle.html', cat: 'flow' },
-  { name: 'memory-layers.html', cat: 'data' },
-  { name: 'deploy-pipeline.html', cat: 'infra' },
-]
 
 export function ToolShowcaseSection() {
   return (
@@ -125,59 +119,6 @@ export function ToolShowcaseSection() {
               </div>
             </div>
           </div>
-        </AnimatedSection>
-
-        <AnimatedSection>
-          <p className="text-sm text-[var(--sb-text)]/50 italic">{m.talk_sb_showcase_init_why()}</p>
-        </AnimatedSection>
-
-        {/* make visuals showcase */}
-        <AnimatedSection>
-          <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] overflow-hidden">
-            <div className="flex items-center gap-2 border-b border-[var(--sb-border)] px-4 py-2">
-              <div className="flex gap-1.5">
-                <div className="size-2.5 rounded-full bg-[var(--sb-red)]/60" />
-                <div className="size-2.5 rounded-full bg-[var(--sb-ember)]/60" />
-                <div className="size-2.5 rounded-full bg-[var(--sb-green)]/60" />
-              </div>
-              <span className="font-mono text-[10px] text-[var(--sb-dim)] ml-2">make visuals</span>
-            </div>
-            <div className="p-4 space-y-2">
-              <p className="font-mono text-xs text-[var(--sb-accent)]">
-                <span className="text-[var(--sb-green)]">$</span> make visuals
-              </p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] mb-2">{m.talk_sb_showcase_visuals_scanning()}</p>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {VISUALS_EXAMPLES.map((v) => (
-                  <div key={v.name} className="flex items-center gap-2 rounded border border-[var(--sb-border)] bg-[var(--sb-bg)] px-3 py-2">
-                    <span className="text-[var(--sb-accent)] text-xs">◑</span>
-                    <div>
-                      <p className="font-mono text-[11px] text-[var(--sb-text)]/80">{v.name}</p>
-                      <p className="font-mono text-[9px] text-[var(--sb-dim)]">{v.cat}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-baseline gap-4 mt-3 pt-2 border-t border-[var(--sb-border)]">
-                <div className="font-mono text-[11px]">
-                  <span className="text-[var(--sb-accent)] font-bold">56</span>
-                  <span className="text-[var(--sb-dim)]"> {m.talk_sb_showcase_visuals_files()}</span>
-                </div>
-                <div className="font-mono text-[11px]">
-                  <span className="text-[var(--sb-accent)] font-bold">8</span>
-                  <span className="text-[var(--sb-dim)]"> {m.talk_sb_showcase_visuals_categories()}</span>
-                </div>
-                <div className="font-mono text-[11px]">
-                  <span className="text-[var(--sb-green)]">✓</span>
-                  <span className="text-[var(--sb-dim)]"> {m.talk_sb_showcase_visuals_manifest()}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </AnimatedSection>
-
-        <AnimatedSection>
-          <p className="text-sm text-[var(--sb-text)]/50 italic">{m.talk_sb_showcase_visuals_why()}</p>
         </AnimatedSection>
 
         {/* Revelation */}

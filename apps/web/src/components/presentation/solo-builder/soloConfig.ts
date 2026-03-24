@@ -13,9 +13,13 @@ export const soloSections = {
   tooling: { phase: 'TOOLING', acte: 'ACTE 2', color: 'teal' },
   showcase: { phase: 'ARSENAL', acte: 'ACTE 2b', color: 'teal' },
   velocity: { phase: 'VELOCITY', acte: 'ACTE 3', color: 'forge' },
+  visuals: { phase: 'VISUALS', acte: 'ACTE 3b', color: 'forge' },
+  breathing: { phase: '—', acte: '—', color: 'forge' },
   product: { phase: 'PRODUCT', acte: 'ACTE 4', color: 'ember' },
-  drift: { phase: 'DRIFT', acte: 'ACTE 5', color: 'red' },
-  lessons: { phase: 'LESSONS', acte: 'ACTE 6', color: 'steel' },
+  methods: { phase: 'METHODS', acte: 'ACTE 4b', color: 'ember' },
+  drift: { phase: 'DRIFT', acte: '—', color: 'red' },
+  steering: { phase: 'STEERING', acte: '—', color: 'red' },
+  lessons: { phase: 'LESSONS', acte: '—', color: 'steel' },
   closing: { phase: 'FORGE', acte: '—', color: 'forge' },
 } satisfies Record<string, SoloSectionConfig>
 
