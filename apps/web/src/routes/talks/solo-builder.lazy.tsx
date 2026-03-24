@@ -1,10 +1,11 @@
 import { cn, PresentationNav } from '@repo/ui'
 import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { ClosingSection } from '@/components/presentation/solo-builder/ClosingSection'
 import { DriftSection } from '@/components/presentation/solo-builder/DriftSection'
+import { HiddenLocSection } from '@/components/presentation/solo-builder/HiddenLocSection'
 import { DriftSteeringSection } from '@/components/presentation/solo-builder/DriftSteeringSection'
 import { IntroSection } from '@/components/presentation/solo-builder/IntroSection'
 import { PreviouslySection } from '@/components/presentation/solo-builder/PreviouslySection'
@@ -31,10 +32,22 @@ export const Route = createLazyFileRoute('/talks/solo-builder')({
 
 const sectionIds = SOLO_SECTION_IDS
 
+/** Hidden slide labels — shown in the phase breadcrumb when a hidden slide is in view */
+const hiddenSlideLabels: Record<string, string> = {
+  'hidden-loc': 'APPENDIX',
+}
+
 /** Per-slide reference links — fill in as needed */
 const slideHints: Record<string, HintLink[]> = {
   intro: [],
-  previously: [],
+  previously: [
+    { label: 'Claude Code', href: '/talks/claude-code' },
+    { label: 'Dev Process', href: '/talks/dev-process' },
+    { label: 'Lyra — Story', href: '/talks/lyra-story' },
+    { label: 'Lyra — Dev', href: '/talks/lyra-dev' },
+    { label: 'Lyra — Product', href: '/talks/lyra-product' },
+    { label: 'LOC overview', href: '#hidden-loc' },
+  ],
   stack: [],
   tooling: [],
   showcase: [],
@@ -73,11 +86,34 @@ export function SoloBuilderPresentation() {
   const handleEscape = useCallback(() => navigate({ to: '/talks' }), [navigate])
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
+  const [activeHiddenSlide, setActiveHiddenSlide] = useState<string | null>(null)
 
   useSectionTracking(sectionIds, setCurrentSectionIndex, { root: scrollContainerRef.current })
 
+  // Track hidden slide visibility
+  useEffect(() => {
+    const hiddenIds = Object.keys(hiddenSlideLabels)
+    const elements = hiddenIds.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+    if (elements.length === 0) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveHiddenSlide(entry.target.id)
+            return
+          }
+        }
+        setActiveHiddenSlide(null)
+      },
+      { threshold: 0.5 },
+    )
+    for (const el of elements) observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   const currentSection = soloSections[(sectionIds[currentSectionIndex] ?? '') as keyof typeof soloSections]
   const currentSectionColors = currentSection ? colorMap[currentSection.color] : null
+  const phaseLabel = activeHiddenSlide ? hiddenSlideLabels[activeHiddenSlide] : currentSection?.phase
 
   return (
     <div
@@ -102,9 +138,9 @@ export function SoloBuilderPresentation() {
             {m.talk_index_title()}
           </Link>
         </div>
-        {currentSection && currentSectionColors && (
-          <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', currentSectionColors.text)}>
-            {currentSection.phase}
+        {phaseLabel && (
+          <span className={cn('font-mono text-xs font-bold tracking-widest uppercase', activeHiddenSlide ? 'text-[var(--sb-dim)]' : currentSectionColors?.text)}>
+            {phaseLabel}
           </span>
         )}
       </div>
@@ -212,6 +248,11 @@ export function SoloBuilderPresentation() {
         <SectionContainer id="closing" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,var(--sb-glow)_0%,transparent_100%)]">
           <ClosingSection />
           <SlideHint links={slideHints.closing ?? []} />
+        </SectionContainer>
+
+        {/* Hidden slides — inside snap container but not in nav or progress */}
+        <SectionContainer id="hidden-loc" className="relative">
+          <HiddenLocSection />
         </SectionContainer>
       </div>
     </div>

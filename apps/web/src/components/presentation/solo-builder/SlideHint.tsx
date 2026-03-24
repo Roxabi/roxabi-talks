@@ -44,18 +44,22 @@ export function SlideHint({ links, children }: SlideHintProps) {
       {open && (
         <div className="absolute bottom-full right-0 mb-2 w-64 rounded-lg border border-[var(--sb-border)] bg-[var(--sb-bg)] p-3 shadow-lg">
           <div className="space-y-1.5">
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 font-mono text-[11px] text-[var(--sb-accent)]/80 hover:text-[var(--sb-accent)] transition-colors"
-              >
-                <span className="text-[9px] text-[var(--sb-dim)]">↗</span>
-                {link.label}
-              </a>
-            ))}
+            {links.map((link) => {
+              const isHash = link.href.startsWith('#')
+              return (
+                <a
+                  key={link.href}
+                  href={isHash ? link.href : `${window.location.origin}${link.href}`}
+                  target={isHash ? undefined : '_blank'}
+                  rel={isHash ? undefined : 'noopener noreferrer'}
+                  onClick={isHash ? () => setOpen(false) : undefined}
+                  className="flex items-center gap-2 font-mono text-[11px] text-[var(--sb-accent)]/80 hover:text-[var(--sb-accent)] transition-colors"
+                >
+                  <span className="text-[9px] text-[var(--sb-dim)]">{isHash ? '↓' : '↗'}</span>
+                  {link.label}
+                </a>
+              )
+            })}
           </div>
           {children && <div className="mt-2 pt-2 border-t border-[var(--sb-border)]">{children}</div>}
         </div>
