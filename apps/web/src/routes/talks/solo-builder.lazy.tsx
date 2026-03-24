@@ -13,6 +13,7 @@ import { SectionChrome } from '@/components/presentation/solo-builder/SectionChr
 import { colorMap, SOLO_SECTION_IDS, soloSections } from '@/components/presentation/solo-builder/soloConfig'
 import { StackSection } from '@/components/presentation/solo-builder/StackSection'
 import { ToolingSection } from '@/components/presentation/solo-builder/ToolingSection'
+import { ToolShowcaseSection } from '@/components/presentation/solo-builder/ToolShowcaseSection'
 import { VelocitySection } from '@/components/presentation/solo-builder/VelocitySection'
 import { SectionContainer } from '@/components/presentation/SectionContainer'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -28,10 +29,11 @@ const sectionIds = SOLO_SECTION_IDS
 export function SoloBuilderPresentation() {
   const sections = useMemo(
     () => [
-      { id: 'previously', label: m.talk_sb_nav_previously() },
       { id: 'intro', label: m.talk_sb_nav_intro() },
+      { id: 'previously', label: m.talk_sb_nav_previously() },
       { id: 'stack', label: m.talk_sb_nav_stack() },
       { id: 'tooling', label: m.talk_sb_nav_tooling() },
+      { id: 'showcase', label: m.talk_sb_nav_showcase() },
       { id: 'velocity', label: m.talk_sb_nav_velocity() },
       { id: 'product', label: m.talk_sb_nav_product() },
       { id: 'drift', label: m.talk_sb_nav_drift() },
@@ -106,12 +108,12 @@ export function SoloBuilderPresentation() {
         ref={scrollContainerRef}
         className="md:h-dvh md:overflow-y-auto md:snap-y md:snap-mandatory"
       >
-        <SectionContainer id="previously" className="relative">
-          <PreviouslySection />
-        </SectionContainer>
-
         <SectionContainer id="intro" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,var(--sb-glow)_0%,transparent_100%)]">
           <IntroSection />
+        </SectionContainer>
+
+        <SectionContainer id="previously" className="relative">
+          <PreviouslySection />
         </SectionContainer>
 
         <SectionContainer id="stack" className="relative">
@@ -122,6 +124,11 @@ export function SoloBuilderPresentation() {
         <SectionContainer id="tooling" className="relative">
           <SectionChrome sectionId="tooling" />
           <ToolingSection />
+        </SectionContainer>
+
+        <SectionContainer id="showcase" className="relative">
+          <SectionChrome sectionId="showcase" />
+          <ToolShowcaseSection />
         </SectionContainer>
 
         <SectionContainer id="velocity" className="relative">

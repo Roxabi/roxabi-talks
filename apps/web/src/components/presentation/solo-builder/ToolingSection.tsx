@@ -1,21 +1,49 @@
 import { AnimatedSection, Badge } from '@repo/ui'
 import { m } from '@/paraglide/messages'
 
-const TOOLING_REPOS = [
-  { name: 'roxabi-plugins', commits: 360, purpose: '17 skills, 9 agents' },
-  { name: 'voiceCLI', commits: 122, purpose: 'TTS + STT local' },
-  { name: 'imageCLI', commits: 36, purpose: 'FLUX, SD3.5' },
-  { name: 'roxabi-vault', commits: 38, purpose: 'Memory store' },
-  { name: 'roxabi-claude-config', commits: 15, purpose: 'Terminal config' },
-  { name: 'lyra-stack', commits: 21, purpose: 'Supervisord hub' },
-  { name: 'roxabi-production', commits: 18, purpose: 'Video engine' },
-  { name: 'roxabi-talks', commits: 33, purpose: 'Presentations' },
-]
-
-const INIT_CMDS = [
-  'prereqs', 'discover', 'create-project', 'labels', 'workflows',
-  'protect-branches', 'scaffold-rules', 'scaffold-docs', 'scaffold',
-]
+const TOOL_CATEGORIES = [
+  {
+    headerKey: 'talk_sb_tooling_cat_init',
+    color: 'var(--sb-teal)',
+    repo: 'roxabi-plugins',
+    items: [
+      { name: '/init', desc: 'Bootstrap project' },
+      { name: '/dev', desc: 'Full dev lifecycle' },
+      { name: '/readme-upgrade', desc: 'Doc quality audit' },
+      { name: '/doc-sync', desc: 'Sync docs after changes' },
+      { name: 'make visuals', desc: 'HTML diagrams index' },
+      { name: 'roxabi-dashboard', desc: 'Project health view' },
+    ],
+  },
+  {
+    headerKey: 'talk_sb_tooling_cat_extensions',
+    color: 'var(--sb-accent)',
+    items: [
+      { name: 'voiceCLI', desc: 'TTS + STT local' },
+      { name: 'imageCLI', desc: 'FLUX, SD3.5' },
+      { name: 'roxabi-vault', desc: 'Knowledge store' },
+      { name: 'lyra-stack', desc: 'Supervisord hub' },
+    ],
+  },
+  {
+    headerKey: 'talk_sb_tooling_cat_skills',
+    color: 'var(--sb-ember)',
+    items: [
+      { name: 'content-generator', desc: 'Video scripts, posts' },
+      { name: 'web-intel', desc: 'Scrape, summarize, adapt' },
+      { name: 'logo-generator', desc: 'SVG + AI logos' },
+      { name: 'rsync', desc: 'Sync plugins to Claude cache' },
+    ],
+  },
+  {
+    headerKey: 'talk_sb_tooling_cat_content',
+    color: 'var(--sb-dim)',
+    items: [
+      { name: 'roxabi-production', desc: 'Video engine' },
+      { name: 'roxabi-talks', desc: 'Presentations' },
+    ],
+  },
+] as const
 
 export function ToolingSection() {
   return (
@@ -61,35 +89,41 @@ export function ToolingSection() {
           </div>
         </AnimatedSection>
 
-        {/* Tooling repos grid */}
+        {/* Tool categories grid */}
         <AnimatedSection>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {TOOLING_REPOS.map((repo) => (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {TOOL_CATEGORIES.map((cat) => (
               <div
-                key={repo.name}
-                className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-3"
+                key={cat.headerKey}
+                className="rounded-lg border bg-[var(--sb-surface)] p-4"
+                style={{ borderColor: `color-mix(in srgb, ${cat.color} 30%, transparent)` }}
               >
-                <p className="font-mono text-xs font-semibold text-[var(--sb-teal)]">{repo.name}</p>
-                <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{repo.commits} commits &middot; {repo.purpose}</p>
+                <div className="flex items-baseline justify-between mb-3">
+                  <p
+                    className="font-mono text-[10px] font-semibold uppercase tracking-widest"
+                    style={{ color: `var(${cat.color.slice(4, -1)})` }}
+                  >
+                    {(m[cat.headerKey as keyof typeof m] as () => string)()}
+                  </p>
+                  {'repo' in cat && cat.repo && (
+                    <span className="font-mono text-[9px] text-[var(--sb-dim)]">{cat.repo}</span>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  {cat.items.map((item) => (
+                    <div key={item.name} className="flex items-baseline gap-2">
+                      <span
+                        className="font-mono text-[11px] font-semibold shrink-0"
+                        style={{ color: `var(${cat.color.slice(4, -1)})` }}
+                      >
+                        {item.name}
+                      </span>
+                      <span className="font-mono text-[10px] text-[var(--sb-dim)]">{item.desc}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
-          </div>
-        </AnimatedSection>
-
-        {/* /init */}
-        <AnimatedSection>
-          <div className="space-y-3">
-            <p className="font-mono text-sm text-[var(--sb-text)]/70">{m.talk_sb_tooling_init()}</p>
-            <div className="flex flex-wrap gap-2">
-              {INIT_CMDS.map((cmd) => (
-                <span
-                  key={cmd}
-                  className="rounded border border-[var(--sb-border)] bg-[var(--sb-surface)] px-2 py-1 font-mono text-[11px] text-[var(--sb-accent)]"
-                >
-                  /init {cmd}
-                </span>
-              ))}
-            </div>
           </div>
         </AnimatedSection>
 

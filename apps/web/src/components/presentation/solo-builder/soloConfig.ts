@@ -7,10 +7,11 @@ export type SoloSectionConfig = {
 }
 
 export const soloSections = {
-  previously: { phase: 'RECAP', acte: '—', color: 'ember' },
   intro: { phase: 'INIT', acte: 'ACTE 0', color: 'forge' },
+  previously: { phase: 'RECAP', acte: '—', color: 'ember' },
   stack: { phase: 'STACK', acte: 'ACTE 1', color: 'ember' },
   tooling: { phase: 'TOOLING', acte: 'ACTE 2', color: 'teal' },
+  showcase: { phase: 'ARSENAL', acte: 'ACTE 2b', color: 'teal' },
   velocity: { phase: 'VELOCITY', acte: 'ACTE 3', color: 'forge' },
   product: { phase: 'PRODUCT', acte: 'ACTE 4', color: 'ember' },
   drift: { phase: 'DRIFT', acte: 'ACTE 5', color: 'red' },

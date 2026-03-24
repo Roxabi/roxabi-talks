@@ -12,7 +12,7 @@ export function ClosingSection() {
         </AnimatedSection>
 
         <AnimatedSection>
-          <h2 className="mx-auto max-w-4xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+          <h2 className="mx-auto max-w-4xl text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl" style={{ fontFamily: "'Chakra Petch', system-ui, sans-serif" }}>
             <span className="bg-gradient-to-br from-[var(--sb-ember)] via-[var(--sb-accent)] to-[#ea580c] bg-clip-text text-transparent">
               {m.talk_sb_closing_title()}
             </span>
