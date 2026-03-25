@@ -2597,5 +2597,24 @@
 
   "talk_sb_nav_recap": "Ship it",
   "talk_sb_nav_tips": "Tips",
-  "talk_sb_nav_next": "Next"
+  "talk_sb_nav_next": "Next",
+  "talk_sb_nav_recon": "Recon",
+
+  "talk_sb_recon_badge": "Act 3c — Reconnaissance",
+  "talk_sb_recon_title": "Reverse engineer everything",
+  "talk_sb_recon_desc": "You don't build in a vacuum. You scrape, benchmark, compare, steal patterns. The best ideas come from deconstructing what already works.",
+  "talk_sb_recon_example1_title": "Video production quality",
+  "talk_sb_recon_example1_desc": "The first Lyra presentation video was a 4/10 on production quality. Solution: scrape 10 top YouTube tech presentations, extract the patterns that work — pacing, cuts, typography, hooks. Apply. Iterate.",
+  "talk_sb_recon_example1_score": "4/10 → iterate",
+  "talk_sb_recon_example2_title": "Lyra is a chimera",
+  "talk_sb_recon_example2_desc": "Lyra doesn't copy one agent framework — it borrows the best ideas from many. Each \"claw\" project is reverse-engineered to extract architectural patterns worth stealing.",
+  "talk_sb_recon_method_title": "The recon loop",
+  "talk_sb_recon_method_step1": "Find 5–10 references in the wild",
+  "talk_sb_recon_method_step2": "Scrape / analyze / deconstruct",
+  "talk_sb_recon_method_step3": "Extract the patterns that work",
+  "talk_sb_recon_method_step4": "Apply to your own context",
+  "talk_sb_recon_reveal": "The fastest way to get good isn't to invent — it's to study what already works, then adapt it.",
+
+  "talk_sb_hidden_claw_title": "Claw Family — Architecture comparisons",
+  "talk_sb_hidden_claw_desc": "Reverse-engineered agent architectures compared against Lyra. Each framework is scored across 8 dimensions — the goal isn't to copy, but to steal the best patterns."
 }

@@ -2597,5 +2597,24 @@
 
   "talk_sb_nav_recap": "Livre-le",
   "talk_sb_nav_tips": "Tips",
-  "talk_sb_nav_next": "Suite"
+  "talk_sb_nav_next": "Suite",
+  "talk_sb_nav_recon": "Recon",
+
+  "talk_sb_recon_badge": "Acte 3c — Reconnaissance",
+  "talk_sb_recon_title": "Reverse engineer tout",
+  "talk_sb_recon_desc": "Tu ne construis pas dans le vide. Tu scrapes, tu benchmarkes, tu compares, tu voles des patterns. Les meilleures idées viennent de la déconstruction de ce qui marche déjà.",
+  "talk_sb_recon_example1_title": "Qualité de production vidéo",
+  "talk_sb_recon_example1_desc": "La première vidéo de présentation Lyra était un 4/10 en qualité de production. Solution : scraper 10 présentations tech YouTube, extraire les patterns qui marchent — rythme, coupes, typo, accroches. Appliquer. Itérer.",
+  "talk_sb_recon_example1_score": "4/10 → itérer",
+  "talk_sb_recon_example2_title": "Lyra est une chimère",
+  "talk_sb_recon_example2_desc": "Lyra ne copie pas un framework d'agent — elle emprunte les meilleures idées de plusieurs. Chaque projet « claw » est reverse-engineeré pour extraire les patterns architecturaux à voler.",
+  "talk_sb_recon_method_title": "La boucle de recon",
+  "talk_sb_recon_method_step1": "Trouver 5–10 références dans la nature",
+  "talk_sb_recon_method_step2": "Scraper / analyser / déconstruire",
+  "talk_sb_recon_method_step3": "Extraire les patterns qui marchent",
+  "talk_sb_recon_method_step4": "Appliquer à ton propre contexte",
+  "talk_sb_recon_reveal": "Le moyen le plus rapide de progresser, ce n'est pas d'inventer — c'est d'étudier ce qui marche déjà, puis de l'adapter.",
+
+  "talk_sb_hidden_claw_title": "Claw Family — Comparaisons d'architectures",
+  "talk_sb_hidden_claw_desc": "Architectures d'agents reverse-engineerées comparées à Lyra. Chaque framework est noté sur 8 dimensions — le but n'est pas de copier, mais de voler les meilleurs patterns."
 }

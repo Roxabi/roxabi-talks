@@ -8,6 +8,7 @@ import { ClosingSection } from '@/components/presentation/solo-builder/ClosingSe
 import { DriftSection } from '@/components/presentation/solo-builder/DriftSection'
 import { DriftSteeringSection } from '@/components/presentation/solo-builder/DriftSteeringSection'
 import { HiddenBrandSection } from '@/components/presentation/solo-builder/HiddenBrandSection'
+import { HiddenClawSection } from '@/components/presentation/solo-builder/HiddenClawSection'
 import { HiddenDashboardSection } from '@/components/presentation/solo-builder/HiddenDashboardSection'
 import { HiddenLocSection } from '@/components/presentation/solo-builder/HiddenLocSection'
 import { HiddenLyraVisualsSection } from '@/components/presentation/solo-builder/HiddenLyraVisualsSection'
@@ -19,6 +20,7 @@ import { LessonsRecapSection } from '@/components/presentation/solo-builder/Less
 import { LessonsSection } from '@/components/presentation/solo-builder/LessonsSection'
 import { NextSection } from '@/components/presentation/solo-builder/NextSection'
 import { PreviouslySection } from '@/components/presentation/solo-builder/PreviouslySection'
+import { ReconSection } from '@/components/presentation/solo-builder/ReconSection'
 import { ProductMethodsSection } from '@/components/presentation/solo-builder/ProductMethodsSection'
 import { ProductSection } from '@/components/presentation/solo-builder/ProductSection'
 import { SectionChrome } from '@/components/presentation/solo-builder/SectionChrome'
@@ -50,6 +52,7 @@ const hiddenSlideLabels: Record<string, string> = {
   'hidden-lyra-visuals': 'VISUALS',
   'hidden-brand': 'BRAND',
   'hidden-dashboard': 'DASHBOARD',
+  'hidden-claw': 'CLAW FAMILY',
 }
 
 /** Per-slide reference links — fill in as needed */
@@ -79,6 +82,10 @@ const slideHints: Record<string, HintLink[]> = {
     { label: 'Diagram gallery', href: '#hidden-visuals-gallery' },
     { label: 'Lyra visual explainers', href: '#hidden-lyra-visuals' },
     { label: 'First Lyra clip', href: 'https://www.youtube.com/watch?v=rMCRNwWiHr0' },
+  ],
+  recon: [
+    { label: 'Claw family comparisons', href: '#hidden-claw' },
+    { label: 'Lyra presentation', href: 'https://www.youtube.com/watch?v=w_97kanWlc8' },
   ],
   breathing: [
     { label: 'Plant breathing moment', href: 'https://www.youtube.com/watch?v=GnmzcahoJ18' },
@@ -117,14 +124,15 @@ export function SoloBuilderPresentation() {
       { id: 'showcase', label: m.talk_sb_nav_showcase() },
       { id: 'velocity', label: m.talk_sb_nav_velocity() },
       { id: 'visuals', label: m.talk_sb_nav_visuals() },
+      { id: 'recon', label: m.talk_sb_nav_recon() },
       { id: 'breathing', label: '·' },
       { id: 'product', label: m.talk_sb_nav_product() },
       { id: 'methods', label: m.talk_sb_nav_methods() },
       { id: 'drift', label: m.talk_sb_nav_drift() },
       { id: 'steering', label: m.talk_sb_nav_steering() },
-      { id: 'lessons', label: m.talk_sb_nav_lessons() },
       { id: 'recap', label: m.talk_sb_nav_recap() },
       { id: 'tips', label: m.talk_sb_nav_tips() },
+      { id: 'lessons', label: m.talk_sb_nav_lessons() },
       { id: 'next', label: m.talk_sb_nav_next() },
       { id: 'closing', label: m.talk_sb_nav_closing() },
     ],
@@ -259,6 +267,12 @@ export function SoloBuilderPresentation() {
           <SlideHint links={slideHints.visuals ?? []} />
         </SectionContainer>
 
+        <SectionContainer id="recon" className="relative">
+          <SectionChrome sectionId="recon" />
+          <ReconSection />
+          <SlideHint links={slideHints.recon ?? []} />
+        </SectionContainer>
+
         <SectionContainer id="breathing" className="relative">
           <BreathingSection />
         </SectionContainer>
@@ -287,12 +301,6 @@ export function SoloBuilderPresentation() {
           <SlideHint links={slideHints.steering ?? []} />
         </SectionContainer>
 
-        <SectionContainer id="lessons" className="relative">
-          <SectionChrome sectionId="lessons" />
-          <LessonsSection />
-          <SlideHint links={slideHints.lessons ?? []} />
-        </SectionContainer>
-
         <SectionContainer id="recap" className="relative">
           <SectionChrome sectionId="recap" />
           <LessonsRecapSection />
@@ -303,6 +311,12 @@ export function SoloBuilderPresentation() {
           <SectionChrome sectionId="tips" />
           <TipsSection />
           <SlideHint links={slideHints.tips ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="lessons" className="relative">
+          <SectionChrome sectionId="lessons" />
+          <LessonsSection />
+          <SlideHint links={slideHints.lessons ?? []} />
         </SectionContainer>
 
         <SectionContainer id="next" className="relative">
@@ -331,6 +345,10 @@ export function SoloBuilderPresentation() {
 
         <SectionContainer id="hidden-dashboard" className="relative">
           <HiddenDashboardSection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-claw" className="relative">
+          <HiddenClawSection />
         </SectionContainer>
 
         <SectionContainer id="hidden-tooling" className="relative">
