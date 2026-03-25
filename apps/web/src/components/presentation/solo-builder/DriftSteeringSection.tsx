@@ -82,25 +82,11 @@ export function DriftSteeringSection() {
           </h2>
         </AnimatedSection>
 
-        {/* 50/50 + Lyra refacto phases — side by side */}
+        {/* Lyra refacto phases (2/3) + 50/50 stacked (1/3) */}
         <AnimatedSection>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {/* Left: 50/50 split */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex-1 rounded-lg bg-[var(--sb-accent)]/20 p-4 text-center">
-                  <p className="font-mono text-2xl font-bold text-[var(--sb-accent)]">50%</p>
-                  <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_features()}</p>
-                </div>
-                <div className="flex-1 rounded-lg bg-[var(--sb-teal)]/20 p-4 text-center">
-                  <p className="font-mono text-2xl font-bold text-[var(--sb-teal)]">50%</p>
-                  <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_refacto()}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Lyra refacto phases */}
-            <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4">
+          <div className="grid gap-4 lg:grid-cols-3">
+            {/* Left 2/3: Lyra refacto phases */}
+            <div className="lg:col-span-2 rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4">
               <p className="font-mono text-[10px] text-[var(--sb-teal)] uppercase tracking-wider mb-3">{m.talk_sb_steering_lyra_title()}</p>
               <div className="space-y-2">
                 {LYRA_PHASES.map((phase) => (
@@ -129,6 +115,18 @@ export function DriftSteeringSection() {
               <p className="font-mono text-[9px] text-[var(--sb-dim)] mt-3 pt-2 border-t border-[var(--sb-border)]">
                 {m.talk_sb_steering_lyra_total()}
               </p>
+            </div>
+
+            {/* Right 1/3: 50/50 stacked */}
+            <div className="flex flex-col gap-3">
+              <div className="flex-1 rounded-lg bg-[var(--sb-accent)]/20 p-4 text-center">
+                <p className="font-mono text-2xl font-bold text-[var(--sb-accent)]">50%</p>
+                <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_features()}</p>
+              </div>
+              <div className="flex-1 rounded-lg bg-[var(--sb-teal)]/20 p-4 text-center">
+                <p className="font-mono text-2xl font-bold text-[var(--sb-teal)]">50%</p>
+                <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_refacto()}</p>
+              </div>
             </div>
           </div>
         </AnimatedSection>
