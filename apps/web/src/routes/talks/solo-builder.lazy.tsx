@@ -88,7 +88,6 @@ const slideHints: Record<string, HintLink[]> = {
   ],
   recon: [
     { label: 'Claw family comparisons', href: '#hidden-claw' },
-    { label: 'Lyra presentation', href: 'https://www.youtube.com/watch?v=w_97kanWlc8' },
   ],
   breathing: [
     { label: 'Plant breathing moment', href: 'https://www.youtube.com/watch?v=GnmzcahoJ18' },
