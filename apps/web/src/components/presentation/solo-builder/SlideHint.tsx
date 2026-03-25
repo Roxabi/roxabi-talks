@@ -46,10 +46,12 @@ export function SlideHint({ links, children }: SlideHintProps) {
           <div className="space-y-1.5">
             {links.map((link) => {
               const isHash = link.href.startsWith('#')
+              const isExternal = link.href.startsWith('http://') || link.href.startsWith('https://')
+              const resolvedHref = isHash ? link.href : isExternal ? link.href : `${window.location.origin}${link.href}`
               return (
                 <a
                   key={link.href}
-                  href={isHash ? link.href : `${window.location.origin}${link.href}`}
+                  href={resolvedHref}
                   target={isHash ? undefined : '_blank'}
                   rel={isHash ? undefined : 'noopener noreferrer'}
                   onClick={isHash ? () => setOpen(false) : undefined}

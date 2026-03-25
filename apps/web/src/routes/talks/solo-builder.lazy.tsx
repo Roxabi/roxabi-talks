@@ -81,6 +81,7 @@ const slideHints: Record<string, HintLink[]> = {
   visuals: [
     { label: 'Diagram gallery', href: '#hidden-visuals-gallery' },
     { label: 'Lyra visual explainers', href: '#hidden-lyra-visuals' },
+    { label: 'Lyra user guide (visual-explainer)', href: 'http://localhost:8080/lyra-visuals/lyra-user-guide-v14.html' },
     { label: 'First Lyra clip', href: 'https://www.youtube.com/watch?v=rMCRNwWiHr0' },
   ],
   recon: [
