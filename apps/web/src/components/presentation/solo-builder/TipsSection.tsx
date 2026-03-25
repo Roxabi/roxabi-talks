@@ -3,11 +3,6 @@ import { m } from '@/paraglide/messages'
 
 const SEEDING_EXAMPLES = [
   {
-    src: '/slides/solo-builder/logo-gallery.png',
-    label: 'Logo exploration gallery',
-    href: 'http://localhost:8080/brand/lyra-logo-gallery.html',
-  },
-  {
     src: '/slides/solo-builder/logo-forge-v01.png',
     label: 'Logo Forge v0.1',
     href: 'http://localhost:8080/brand/lyra-logo-forge.html',
