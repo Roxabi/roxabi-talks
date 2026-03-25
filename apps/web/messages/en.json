@@ -2508,6 +2508,9 @@
   "talk_sb_steering_pyramid_issues": "Issues & WIP",
   "talk_sb_steering_pyramid_issues_desc": "New work enters here, not above",
 
+  "talk_sb_steering_guardrails_title": "Automated guardrails",
+  "talk_sb_steering_guardrails_desc": "Agents don't drift if the linter catches them first. Strict rules are your cheapest steering tool.",
+
   "talk_sb_closing_act0": "The starting point",
   "talk_sb_closing_act0_twist": "You think the tech is the hard part",
   "talk_sb_closing_act1": "The tech stack",

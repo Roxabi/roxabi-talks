@@ -2508,6 +2508,9 @@
   "talk_sb_steering_pyramid_issues": "Issues & WIP",
   "talk_sb_steering_pyramid_issues_desc": "Le nouveau travail entre ici, pas au-dessus",
 
+  "talk_sb_steering_guardrails_title": "Garde-fous automatisés",
+  "talk_sb_steering_guardrails_desc": "Les agents ne dérivent pas si le linter les rattrape d'abord. Les règles strictes sont ton outil de pilotage le moins cher.",
+
   "talk_sb_closing_act0": "Le point de départ",
   "talk_sb_closing_act0_twist": "Tu penses que la technique c'est le dur",
   "talk_sb_closing_act1": "La stack technique",

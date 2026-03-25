@@ -22,6 +22,15 @@ const LYRA_PHASES = [
   },
 ]
 
+const GUARDRAILS = [
+  { rule: 'noExplicitAny', value: 'warn', tool: 'biome', color: 'var(--sb-ember)' },
+  { rule: 'noExcessiveCognitiveComplexity', value: 'warn', tool: 'biome', color: 'var(--sb-ember)' },
+  { rule: 'noExcessiveLinesPerFunction', value: 'warn', tool: 'biome', color: 'var(--sb-ember)' },
+  { rule: 'noExcessiveLinesPerFile', value: '500 max', tool: 'biome', color: 'var(--sb-red)' },
+  { rule: 'strict + strictNullChecks', value: 'true', tool: 'tsconfig', color: 'var(--sb-teal)' },
+  { rule: 'noUnusedImports / Variables', value: 'error', tool: 'biome', color: 'var(--sb-red)' },
+]
+
 const PYRAMID_LEVELS = [
   {
     key: 'prod',
@@ -118,6 +127,33 @@ export function DriftSteeringSection() {
             <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-4 pt-3 border-t border-[var(--sb-border)]">
               {m.talk_sb_steering_lyra_total()}
             </p>
+          </div>
+        </AnimatedSection>
+
+        {/* Automated guardrails */}
+        <AnimatedSection>
+          <div className="rounded-lg border border-[var(--sb-red)]/30 bg-[var(--sb-surface)] p-5">
+            <div className="mb-4">
+              <p className="font-mono text-xs text-[var(--sb-red)] uppercase tracking-wider">{m.talk_sb_steering_guardrails_title()}</p>
+              <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-1">{m.talk_sb_steering_guardrails_desc()}</p>
+            </div>
+            <div className="grid gap-1.5 sm:grid-cols-2">
+              {GUARDRAILS.map((g) => (
+                <div key={g.rule} className="flex items-center gap-2 rounded border border-[var(--sb-border)] bg-[var(--sb-bg)]/50 px-3 py-1.5">
+                  <span className="font-mono text-[10px] text-[var(--sb-text)]/80 flex-1 truncate">{g.rule}</span>
+                  <span
+                    className="font-mono text-[9px] font-semibold shrink-0 px-1.5 py-0.5 rounded"
+                    style={{
+                      color: g.color,
+                      backgroundColor: `color-mix(in srgb, ${g.color} 15%, transparent)`,
+                    }}
+                  >
+                    {g.value}
+                  </span>
+                  <span className="font-mono text-[8px] text-[var(--sb-dim)] shrink-0">{g.tool}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </AnimatedSection>
 
