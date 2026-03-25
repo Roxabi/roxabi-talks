@@ -53,6 +53,7 @@ const hiddenSlideLabels: Record<string, string> = {
   'hidden-brand': 'BRAND',
   'hidden-dashboard': 'DASHBOARD',
   'hidden-claw': 'CLAW FAMILY',
+  'hidden-tips': 'TIPS',
 }
 
 /** Per-slide reference links — fill in as needed */
@@ -82,6 +83,7 @@ const slideHints: Record<string, HintLink[]> = {
     { label: 'Diagram gallery', href: '#hidden-visuals-gallery' },
     { label: 'Lyra visual explainers', href: '#hidden-lyra-visuals' },
     { label: 'Lyra user guide (visual-explainer)', href: 'http://localhost:8080/lyra-visuals/lyra-user-guide-v14.html' },
+    { label: 'Exploratory loop', href: '#hidden-tips' },
     { label: 'First Lyra clip', href: 'https://www.youtube.com/watch?v=rMCRNwWiHr0' },
   ],
   recon: [
@@ -110,7 +112,6 @@ const slideHints: Record<string, HintLink[]> = {
     { label: 'Refacto phases', href: '#hidden-refacto' },
   ],
   recap: [],
-  tips: [],
   next: [],
   closing: [],
 }
@@ -132,7 +133,6 @@ export function SoloBuilderPresentation() {
       { id: 'drift', label: m.talk_sb_nav_drift() },
       { id: 'steering', label: m.talk_sb_nav_steering() },
       { id: 'recap', label: m.talk_sb_nav_recap() },
-      { id: 'tips', label: m.talk_sb_nav_tips() },
       { id: 'lessons', label: m.talk_sb_nav_lessons() },
       { id: 'next', label: m.talk_sb_nav_next() },
       { id: 'closing', label: m.talk_sb_nav_closing() },
@@ -308,12 +308,6 @@ export function SoloBuilderPresentation() {
           <SlideHint links={slideHints.recap ?? []} />
         </SectionContainer>
 
-        <SectionContainer id="tips" className="relative">
-          <SectionChrome sectionId="tips" />
-          <TipsSection />
-          <SlideHint links={slideHints.tips ?? []} />
-        </SectionContainer>
-
         <SectionContainer id="lessons" className="relative">
           <SectionChrome sectionId="lessons" />
           <LessonsSection />
@@ -346,6 +340,10 @@ export function SoloBuilderPresentation() {
 
         <SectionContainer id="hidden-dashboard" className="relative">
           <HiddenDashboardSection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-tips" className="relative">
+          <TipsSection />
         </SectionContainer>
 
         <SectionContainer id="hidden-claw" className="relative">

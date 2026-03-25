@@ -21,7 +21,6 @@ export const soloSections = {
   drift: { phase: 'DRIFT', acte: '—', color: 'red' },
   steering: { phase: 'STEERING', acte: '—', color: 'red' },
   recap: { phase: 'SHIP', acte: '—', color: 'ember' },
-  tips: { phase: 'TIPS', acte: '—', color: 'teal' },
   lessons: { phase: 'LESSONS', acte: '—', color: 'steel' },
   next: { phase: 'NEXT', acte: '—', color: 'forge' },
   closing: { phase: 'FORGE', acte: '—', color: 'forge' },
