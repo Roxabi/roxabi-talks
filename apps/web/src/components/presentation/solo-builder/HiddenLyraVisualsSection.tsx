@@ -20,7 +20,7 @@ const VISUALS = [
   {
     src: '/slides/solo-builder/lyra-persistence-arch.png',
     label: 'Persistence arch',
-    href: 'http://localhost:8080/lyra-persistence-arch.html#db',
+    href: 'http://localhost:8080/lyra-visuals/lyra-persistence-arch.html#db',
   },
 ]
 
