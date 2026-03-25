@@ -82,51 +82,54 @@ export function DriftSteeringSection() {
           </h2>
         </AnimatedSection>
 
-        {/* 50/50 split */}
+        {/* 50/50 + Lyra refacto phases — side by side */}
         <AnimatedSection>
-          <div className="flex items-center gap-4">
-            <div className="flex-1 rounded-lg bg-[var(--sb-accent)]/20 p-4 text-center">
-              <p className="font-mono text-2xl font-bold text-[var(--sb-accent)]">50%</p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_features()}</p>
-            </div>
-            <div className="flex-1 rounded-lg bg-[var(--sb-teal)]/20 p-4 text-center">
-              <p className="font-mono text-2xl font-bold text-[var(--sb-teal)]">50%</p>
-              <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_refacto()}</p>
-            </div>
-          </div>
-        </AnimatedSection>
-
-        {/* Lyra refacto phases — real commit data */}
-        <AnimatedSection>
-          <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-5">
-            <p className="font-mono text-xs text-[var(--sb-teal)] uppercase tracking-wider mb-4">{m.talk_sb_steering_lyra_title()}</p>
-            <div className="space-y-3">
-              {LYRA_PHASES.map((phase) => (
-                <div key={phase.num} className="flex items-start gap-3">
-                  <span
-                    className="font-mono text-xs font-bold w-6 shrink-0 mt-0.5"
-                    style={{ color: phase.color }}
-                  >
-                    {phase.num}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-[var(--sb-text)]/80">{phase.what()}</p>
-                  </div>
-                  <span
-                    className="font-mono text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded"
-                    style={{
-                      color: phase.color,
-                      backgroundColor: `color-mix(in srgb, ${phase.color} 15%, transparent)`,
-                    }}
-                  >
-                    {phase.commits()}
-                  </span>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {/* Left: 50/50 split */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 rounded-lg bg-[var(--sb-accent)]/20 p-4 text-center">
+                  <p className="font-mono text-2xl font-bold text-[var(--sb-accent)]">50%</p>
+                  <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_features()}</p>
                 </div>
-              ))}
+                <div className="flex-1 rounded-lg bg-[var(--sb-teal)]/20 p-4 text-center">
+                  <p className="font-mono text-2xl font-bold text-[var(--sb-teal)]">50%</p>
+                  <p className="font-mono text-[10px] text-[var(--sb-dim)] uppercase mt-1">{m.talk_sb_drift_refacto()}</p>
+                </div>
+              </div>
             </div>
-            <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-4 pt-3 border-t border-[var(--sb-border)]">
-              {m.talk_sb_steering_lyra_total()}
-            </p>
+
+            {/* Right: Lyra refacto phases */}
+            <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-4">
+              <p className="font-mono text-[10px] text-[var(--sb-teal)] uppercase tracking-wider mb-3">{m.talk_sb_steering_lyra_title()}</p>
+              <div className="space-y-2">
+                {LYRA_PHASES.map((phase) => (
+                  <div key={phase.num} className="flex items-start gap-2">
+                    <span
+                      className="font-mono text-[10px] font-bold w-5 shrink-0 mt-0.5"
+                      style={{ color: phase.color }}
+                    >
+                      {phase.num}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] text-[var(--sb-text)]/80 leading-snug">{phase.what()}</p>
+                    </div>
+                    <span
+                      className="font-mono text-[9px] font-semibold shrink-0 px-1.5 py-0.5 rounded"
+                      style={{
+                        color: phase.color,
+                        backgroundColor: `color-mix(in srgb, ${phase.color} 15%, transparent)`,
+                      }}
+                    >
+                      {phase.commits()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <p className="font-mono text-[9px] text-[var(--sb-dim)] mt-3 pt-2 border-t border-[var(--sb-border)]">
+                {m.talk_sb_steering_lyra_total()}
+              </p>
+            </div>
           </div>
         </AnimatedSection>
 
