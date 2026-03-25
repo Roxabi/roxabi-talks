@@ -78,13 +78,13 @@ const slideHints: Record<string, HintLink[]> = {
   ],
   velocity: [
     { label: 'Refacto phases', href: '#hidden-refacto' },
+    { label: 'Exploratory loop', href: '#hidden-tips' },
+    { label: 'First Lyra clip', href: 'https://www.youtube.com/watch?v=rMCRNwWiHr0' },
   ],
   visuals: [
     { label: 'Diagram gallery', href: '#hidden-visuals-gallery' },
     { label: 'Lyra visual explainers', href: '#hidden-lyra-visuals' },
     { label: 'Lyra user guide (visual-explainer)', href: 'http://localhost:8080/lyra-visuals/lyra-user-guide-v14.html' },
-    { label: 'Exploratory loop', href: '#hidden-tips' },
-    { label: 'First Lyra clip', href: 'https://www.youtube.com/watch?v=rMCRNwWiHr0' },
   ],
   recon: [
     { label: 'Claw family comparisons', href: '#hidden-claw' },
