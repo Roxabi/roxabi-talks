@@ -102,14 +102,6 @@ export function LessonsSection() {
           </div>
         </AnimatedSection>
 
-        {/* Closing message */}
-        <AnimatedSection>
-          <div className="border-l-2 border-[var(--sb-accent)]/40 pl-4">
-            <p className="text-lg text-[var(--sb-text)]/80 leading-relaxed font-medium">
-              {m.talk_sb_lessons_closing()}
-            </p>
-          </div>
-        </AnimatedSection>
       </div>
     </div>
   )

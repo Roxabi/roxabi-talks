@@ -3,22 +3,31 @@ import { createLazyFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
+import { BreathingSection } from '@/components/presentation/solo-builder/BreathingSection'
 import { ClosingSection } from '@/components/presentation/solo-builder/ClosingSection'
 import { DriftSection } from '@/components/presentation/solo-builder/DriftSection'
-import { HiddenLocSection } from '@/components/presentation/solo-builder/HiddenLocSection'
 import { DriftSteeringSection } from '@/components/presentation/solo-builder/DriftSteeringSection'
+import { HiddenBrandSection } from '@/components/presentation/solo-builder/HiddenBrandSection'
+import { HiddenDashboardSection } from '@/components/presentation/solo-builder/HiddenDashboardSection'
+import { HiddenLocSection } from '@/components/presentation/solo-builder/HiddenLocSection'
+import { HiddenLyraVisualsSection } from '@/components/presentation/solo-builder/HiddenLyraVisualsSection'
+import { HiddenRefactoSection } from '@/components/presentation/solo-builder/HiddenRefactoSection'
+import { HiddenToolingSection } from '@/components/presentation/solo-builder/HiddenToolingSection'
+import { HiddenVisualsGallerySection } from '@/components/presentation/solo-builder/HiddenVisualsGallerySection'
 import { IntroSection } from '@/components/presentation/solo-builder/IntroSection'
-import { PreviouslySection } from '@/components/presentation/solo-builder/PreviouslySection'
+import { LessonsRecapSection } from '@/components/presentation/solo-builder/LessonsRecapSection'
 import { LessonsSection } from '@/components/presentation/solo-builder/LessonsSection'
+import { NextSection } from '@/components/presentation/solo-builder/NextSection'
+import { PreviouslySection } from '@/components/presentation/solo-builder/PreviouslySection'
+import { ProductMethodsSection } from '@/components/presentation/solo-builder/ProductMethodsSection'
 import { ProductSection } from '@/components/presentation/solo-builder/ProductSection'
 import { SectionChrome } from '@/components/presentation/solo-builder/SectionChrome'
+import { SlideHint, type HintLink } from '@/components/presentation/solo-builder/SlideHint'
 import { colorMap, SOLO_SECTION_IDS, soloSections } from '@/components/presentation/solo-builder/soloConfig'
 import { StackSection } from '@/components/presentation/solo-builder/StackSection'
 import { ToolingSection } from '@/components/presentation/solo-builder/ToolingSection'
+import { TipsSection } from '@/components/presentation/solo-builder/TipsSection'
 import { ToolShowcaseSection } from '@/components/presentation/solo-builder/ToolShowcaseSection'
-import { BreathingSection } from '@/components/presentation/solo-builder/BreathingSection'
-import { ProductMethodsSection } from '@/components/presentation/solo-builder/ProductMethodsSection'
-import { SlideHint, type HintLink } from '@/components/presentation/solo-builder/SlideHint'
 import { VelocitySection } from '@/components/presentation/solo-builder/VelocitySection'
 import { VelocityVisualsSection } from '@/components/presentation/solo-builder/VelocityVisualsSection'
 import { SectionContainer } from '@/components/presentation/SectionContainer'
@@ -35,6 +44,12 @@ const sectionIds = SOLO_SECTION_IDS
 /** Hidden slide labels — shown in the phase breadcrumb when a hidden slide is in view */
 const hiddenSlideLabels: Record<string, string> = {
   'hidden-loc': 'APPENDIX',
+  'hidden-tooling': 'ECOSYSTEM',
+  'hidden-refacto': 'REFACTO',
+  'hidden-visuals-gallery': 'GALLERY',
+  'hidden-lyra-visuals': 'VISUALS',
+  'hidden-brand': 'BRAND',
+  'hidden-dashboard': 'DASHBOARD',
 }
 
 /** Per-slide reference links — fill in as needed */
@@ -48,17 +63,47 @@ const slideHints: Record<string, HintLink[]> = {
     { label: 'Lyra — Product', href: '/talks/lyra-product' },
     { label: 'LOC overview', href: '#hidden-loc' },
   ],
-  stack: [],
-  tooling: [],
-  showcase: [],
-  velocity: [],
-  visuals: [],
-  breathing: [],
+  stack: [
+    { label: 'LOC overview', href: '#hidden-loc' },
+  ],
+  tooling: [
+    { label: 'Ecosystem map', href: '#hidden-tooling' },
+  ],
+  showcase: [
+    { label: 'Lyra README', href: 'https://github.com/Roxabi/lyra' },
+  ],
+  velocity: [
+    { label: 'Refacto phases', href: '#hidden-refacto' },
+  ],
+  visuals: [
+    { label: 'Diagram gallery', href: '#hidden-visuals-gallery' },
+    { label: 'Lyra visual explainers', href: '#hidden-lyra-visuals' },
+    { label: 'First Lyra clip', href: 'https://www.youtube.com/watch?v=rMCRNwWiHr0' },
+  ],
+  breathing: [
+    { label: 'Plant breathing moment', href: 'https://www.youtube.com/watch?v=GnmzcahoJ18' },
+  ],
   product: [],
-  methods: [],
-  drift: [],
-  steering: [],
-  lessons: [],
+  methods: [
+    { label: 'Brand playbook', href: '#hidden-brand' },
+    { label: 'Brand Exploration Playbook', href: 'https://github.com/Roxabi/lyra/blob/staging/brand/BRAND-EXPLORATION-PLAYBOOK.md' },
+    { label: 'Lyra presentation', href: 'https://www.youtube.com/watch?v=w_97kanWlc8' },
+  ],
+  drift: [
+    { label: 'Refacto phases', href: '#hidden-refacto' },
+  ],
+  steering: [
+    { label: 'Refacto phases', href: '#hidden-refacto' },
+    { label: 'Dashboard', href: '#hidden-dashboard' },
+  ],
+  lessons: [
+    { label: 'LOC overview', href: '#hidden-loc' },
+    { label: 'Ecosystem map', href: '#hidden-tooling' },
+    { label: 'Refacto phases', href: '#hidden-refacto' },
+  ],
+  recap: [],
+  tips: [],
+  next: [],
   closing: [],
 }
 
@@ -78,6 +123,9 @@ export function SoloBuilderPresentation() {
       { id: 'drift', label: m.talk_sb_nav_drift() },
       { id: 'steering', label: m.talk_sb_nav_steering() },
       { id: 'lessons', label: m.talk_sb_nav_lessons() },
+      { id: 'recap', label: m.talk_sb_nav_recap() },
+      { id: 'tips', label: m.talk_sb_nav_tips() },
+      { id: 'next', label: m.talk_sb_nav_next() },
       { id: 'closing', label: m.talk_sb_nav_closing() },
     ],
     []
@@ -245,12 +293,54 @@ export function SoloBuilderPresentation() {
           <SlideHint links={slideHints.lessons ?? []} />
         </SectionContainer>
 
+        <SectionContainer id="recap" className="relative">
+          <SectionChrome sectionId="recap" />
+          <LessonsRecapSection />
+          <SlideHint links={slideHints.recap ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="tips" className="relative">
+          <SectionChrome sectionId="tips" />
+          <TipsSection />
+          <SlideHint links={slideHints.tips ?? []} />
+        </SectionContainer>
+
+        <SectionContainer id="next" className="relative">
+          <SectionChrome sectionId="next" />
+          <NextSection />
+          <SlideHint links={slideHints.next ?? []} />
+        </SectionContainer>
+
         <SectionContainer id="closing" className="relative [background:radial-gradient(ellipse_80%_60%_at_50%_50%,var(--sb-glow)_0%,transparent_100%)]">
           <ClosingSection />
           <SlideHint links={slideHints.closing ?? []} />
         </SectionContainer>
 
         {/* Hidden slides — inside snap container but not in nav or progress */}
+        <SectionContainer id="hidden-visuals-gallery" className="relative">
+          <HiddenVisualsGallerySection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-lyra-visuals" className="relative">
+          <HiddenLyraVisualsSection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-brand" className="relative">
+          <HiddenBrandSection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-dashboard" className="relative">
+          <HiddenDashboardSection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-tooling" className="relative">
+          <HiddenToolingSection />
+        </SectionContainer>
+
+        <SectionContainer id="hidden-refacto" className="relative">
+          <HiddenRefactoSection />
+        </SectionContainer>
+
         <SectionContainer id="hidden-loc" className="relative">
           <HiddenLocSection />
         </SectionContainer>

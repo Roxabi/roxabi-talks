@@ -1,6 +1,62 @@
 import { AnimatedSection, Badge } from '@repo/ui'
 import { m } from '@/paraglide/messages'
 
+const LYRA_PHASES = [
+  {
+    num: '01',
+    what: () => m.talk_sb_steering_lyra_phase1(),
+    commits: () => m.talk_sb_steering_lyra_phase1_commits(),
+    color: 'var(--sb-teal)',
+  },
+  {
+    num: '02',
+    what: () => m.talk_sb_steering_lyra_phase2(),
+    commits: () => m.talk_sb_steering_lyra_phase2_commits(),
+    color: 'var(--sb-accent)',
+  },
+  {
+    num: '03',
+    what: () => m.talk_sb_steering_lyra_phase3(),
+    commits: () => m.talk_sb_steering_lyra_phase3_commits(),
+    color: 'var(--sb-ember)',
+  },
+]
+
+const PYRAMID_LEVELS = [
+  {
+    key: 'prod',
+    label: () => m.talk_sb_steering_pyramid_prod(),
+    desc: () => m.talk_sb_steering_pyramid_prod_desc(),
+    color: 'var(--sb-red)',
+    width: '45%',
+    icon: '●',
+  },
+  {
+    key: 'ci',
+    label: () => m.talk_sb_steering_pyramid_ci(),
+    desc: () => m.talk_sb_steering_pyramid_ci_desc(),
+    color: 'var(--sb-ember)',
+    width: '60%',
+    icon: '◑',
+  },
+  {
+    key: 'pr',
+    label: () => m.talk_sb_steering_pyramid_pr(),
+    desc: () => m.talk_sb_steering_pyramid_pr_desc(),
+    color: 'var(--sb-accent)',
+    width: '78%',
+    icon: '◐',
+  },
+  {
+    key: 'issues',
+    label: () => m.talk_sb_steering_pyramid_issues(),
+    desc: () => m.talk_sb_steering_pyramid_issues_desc(),
+    color: 'var(--sb-teal)',
+    width: '100%',
+    icon: '○',
+  },
+]
+
 export function DriftSteeringSection() {
   return (
     <div className="relative mx-auto w-full max-w-5xl">
@@ -17,7 +73,7 @@ export function DriftSteeringSection() {
           </h2>
         </AnimatedSection>
 
-        {/* 50/50 */}
+        {/* 50/50 split */}
         <AnimatedSection>
           <div className="flex items-center gap-4">
             <div className="flex-1 rounded-lg bg-[var(--sb-accent)]/20 p-4 text-center">
@@ -31,24 +87,68 @@ export function DriftSteeringSection() {
           </div>
         </AnimatedSection>
 
-        {/* The steering pyramid */}
+        {/* Lyra refacto phases — real commit data */}
         <AnimatedSection>
           <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-5">
-            <p className="font-mono text-xs text-[var(--sb-accent)] uppercase tracking-wider mb-3">{m.talk_sb_drift_dashboard_title()}</p>
-            <div className="flex gap-2">
-              {['PROD', 'CI/CD', 'PR', 'ISSUES'].map((label, i) => (
+            <p className="font-mono text-xs text-[var(--sb-teal)] uppercase tracking-wider mb-4">{m.talk_sb_steering_lyra_title()}</p>
+            <div className="space-y-3">
+              {LYRA_PHASES.map((phase) => (
+                <div key={phase.num} className="flex items-start gap-3">
+                  <span
+                    className="font-mono text-xs font-bold w-6 shrink-0 mt-0.5"
+                    style={{ color: phase.color }}
+                  >
+                    {phase.num}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-[var(--sb-text)]/80">{phase.what()}</p>
+                  </div>
+                  <span
+                    className="font-mono text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded"
+                    style={{
+                      color: phase.color,
+                      backgroundColor: `color-mix(in srgb, ${phase.color} 15%, transparent)`,
+                    }}
+                  >
+                    {phase.commits()}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-4 pt-3 border-t border-[var(--sb-border)]">
+              {m.talk_sb_steering_lyra_total()}
+            </p>
+          </div>
+        </AnimatedSection>
+
+        {/* Steering pyramid — vertical, top-down priority */}
+        <AnimatedSection>
+          <div className="rounded-lg border border-[var(--sb-border)] bg-[var(--sb-surface)] p-5">
+            <p className="font-mono text-xs text-[var(--sb-accent)] uppercase tracking-wider mb-4">{m.talk_sb_drift_dashboard_title()}</p>
+            <div className="flex flex-col items-center gap-2">
+              {PYRAMID_LEVELS.map((level) => (
                 <div
-                  key={label}
-                  className="flex-1 rounded border border-[var(--sb-border)] p-2 text-center"
-                  style={{ opacity: 1 - i * 0.15 }}
+                  key={level.key}
+                  className="rounded-lg border p-3 transition-all"
+                  style={{
+                    width: level.width,
+                    borderColor: `color-mix(in srgb, ${level.color} 40%, transparent)`,
+                    backgroundColor: `color-mix(in srgb, ${level.color} 6%, transparent)`,
+                  }}
                 >
-                  <p className={`font-mono text-[9px] uppercase ${i === 0 ? 'text-[var(--sb-red)]' : 'text-[var(--sb-dim)]'}`}>
-                    {label}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm" style={{ color: level.color }}>{level.icon}</span>
+                    <span className="font-mono text-xs font-semibold" style={{ color: level.color }}>
+                      {level.label()}
+                    </span>
+                  </div>
+                  <p className="font-mono text-[9px] text-[var(--sb-dim)] mt-1 ml-6">
+                    {level.desc()}
                   </p>
                 </div>
               ))}
             </div>
-            <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-3">{m.talk_sb_drift_dashboard_desc()}</p>
+            <p className="font-mono text-[10px] text-[var(--sb-dim)] mt-4 text-center">{m.talk_sb_drift_dashboard_desc()}</p>
           </div>
         </AnimatedSection>
 
