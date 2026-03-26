@@ -35,7 +35,10 @@ async function getPlugins() {
 const config = defineConfig(async () => ({
   build: { chunkSizeWarningLimit: 1000 },
   server: { port: 3000 },
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  resolve: {
+    conditions: ['source'],
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   plugins: await getPlugins(),
   ssr: {
     // Remotion is client-only — exclude from SSR bundle to avoid parse errors
