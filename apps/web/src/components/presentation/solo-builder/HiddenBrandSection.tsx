@@ -5,37 +5,37 @@ const BRAND_PAGES = [
   {
     src: '/slides/solo-builder/brand-positioning.png',
     label: 'Positioning exploration',
-    href: 'http://localhost:8080/brand/lyra-positioning-exploration.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-positioning-exploration.html',
   },
   {
     src: '/slides/solo-builder/brand-taglines.png',
     label: 'Taglines',
-    href: 'http://localhost:8080/brand/lyra-taglines-extend.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-taglines-extend.html',
   },
   {
     src: '/slides/solo-builder/brand-personas.png',
     label: 'Customer personas',
-    href: 'http://localhost:8080/brand/lyra-customer-personas.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-customer-personas.html',
   },
   {
     src: '/slides/solo-builder/brand-messaging.png',
     label: 'Messaging framework',
-    href: 'http://localhost:8080/brand/lyra-messaging-framework.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-messaging-framework.html',
   },
   {
     src: '/slides/solo-builder/brand-visual-v1.png',
     label: 'Visual directions v1',
-    href: 'http://localhost:8080/brand/lyra-visual-directions.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-visual-directions.html',
   },
   {
     src: '/slides/solo-builder/brand-visual-v2.png',
     label: 'Visual directions v2',
-    href: 'http://localhost:8080/brand/lyra-visual-directions-v2.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-visual-directions-v2.html',
   },
   {
     src: '/slides/solo-builder/brand-video-brief.png',
     label: 'Video brief',
-    href: 'http://localhost:8080/brand/lyra-video-brief.html',
+    href: 'http://localhost:8080/lyra/brand/lyra-video-brief.html',
   },
 ]
 

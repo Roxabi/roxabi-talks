@@ -5,37 +5,37 @@ const CLAW_VISUALS = [
   {
     src: '/slides/solo-builder/clawfamily-comparison.png',
     label: 'Claw Family — Comparison Matrix',
-    href: 'http://localhost:8080/clawfamily-comparison-matrix.html',
+    href: 'http://localhost:8080/_shared/diagrams/clawfamily-comparison-matrix.html',
   },
   {
     src: '/slides/solo-builder/benchmark-2026.png',
     label: 'AI Agent Workflow Benchmark 2026',
-    href: 'http://localhost:8080/benchmark-2026.html',
+    href: 'http://localhost:8080/_shared/diagrams/benchmark-2026.html',
   },
   {
     src: '/slides/solo-builder/alphaclaw-visual.png',
     label: 'AlphaClaw',
-    href: 'http://localhost:8080/alphaclaw-visual.html',
+    href: 'http://localhost:8080/_shared/diagrams/alphaclaw-visual.html',
   },
   {
     src: '/slides/solo-builder/metaclaw-visual.png',
     label: 'MetaClaw',
-    href: 'http://localhost:8080/metaclaw-visual.html',
+    href: 'http://localhost:8080/_shared/diagrams/metaclaw-visual.html',
   },
   {
     src: '/slides/solo-builder/scalyclaw-visual.png',
     label: 'ScalyClaw',
-    href: 'http://localhost:8080/scalyclaw-visual.html',
+    href: 'http://localhost:8080/_shared/diagrams/scalyclaw-visual.html',
   },
   {
     src: '/slides/solo-builder/clawvault-visual.png',
     label: 'ClawVault',
-    href: 'http://localhost:8080/clawvault-visual.html',
+    href: 'http://localhost:8080/_shared/diagrams/clawvault-visual.html',
   },
   {
     src: '/slides/solo-builder/ironclaw-architecture.png',
     label: 'IronClaw — For Lyra Comparison',
-    href: 'http://localhost:8080/ironclaw-architecture-plan.html',
+    href: 'http://localhost:8080/_shared/diagrams/ironclaw-architecture-plan.html',
   },
 ]
 

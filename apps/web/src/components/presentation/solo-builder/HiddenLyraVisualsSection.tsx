@@ -5,22 +5,22 @@ const VISUALS = [
   {
     src: '/slides/solo-builder/lyra-ux-telegram.png',
     label: 'UX Telegram',
-    href: 'http://localhost:8080/lyra-visuals/lyra-ux-telegram.html',
+    href: 'http://localhost:8080/lyra/visuals/lyra-ux-telegram.html',
   },
   {
     src: '/slides/solo-builder/lyra-stream-ux.png',
     label: 'Stream UX',
-    href: 'http://localhost:8080/lyra-visuals/lyra-stream-ux.html',
+    href: 'http://localhost:8080/lyra/visuals/lyra-stream-ux.html',
   },
   {
     src: '/slides/solo-builder/lyra-arch-gap.png',
     label: 'Architecture gap',
-    href: 'http://localhost:8080/lyra-visuals/lyra-arch-gap.html',
+    href: 'http://localhost:8080/lyra/visuals/lyra-arch-gap.html',
   },
   {
     src: '/slides/solo-builder/lyra-persistence-arch.png',
     label: 'Persistence arch',
-    href: 'http://localhost:8080/lyra-visuals/lyra-persistence-arch.html#db',
+    href: 'http://localhost:8080/lyra/visuals/lyra-persistence-arch.html#db',
   },
 ]
 
