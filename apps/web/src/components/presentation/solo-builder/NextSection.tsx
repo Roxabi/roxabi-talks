@@ -18,7 +18,7 @@ export function NextSection() {
         </AnimatedSection>
 
         <AnimatedSection>
-          <p className="max-w-2xl text-base text-[var(--sb-text)]/60 leading-relaxed">
+          <p className="text-base text-[var(--sb-text)]/60 leading-relaxed">
             {m.talk_sb_next_desc()}
           </p>
         </AnimatedSection>
