@@ -16,6 +16,7 @@ async function getPlugins() {
     }),
     nitro({
       preset: process.env.NITRO_PRESET,
+      vercel: { entryFormat: 'node' },
     }),
     viteTsConfigPaths({
       projects: [
@@ -39,7 +40,15 @@ const config = defineConfig(async ({ command }) => ({
   // bundled into the SSR function and crashing it at runtime (Vercel 508).
   resolve: command === 'serve'
     ? { conditions: ['source'] }
-    : { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+    : {
+        alias: {
+          '@': fileURLToPath(new URL('./src', import.meta.url)),
+          // Force tslib to ESM — Rolldown's __commonJSMin thunk interop is broken
+          // and never calls the thunk before passing it to __toESM, so CJS tslib
+          // destructures as undefined. The ESM entry avoids the CJS path entirely.
+          tslib: 'tslib/tslib.es6.mjs',
+        },
+      },
   plugins: await getPlugins(),
   ssr: {
     // Remotion is client-only. Vite 8 changed SSR externalization defaults vs 7.x —
