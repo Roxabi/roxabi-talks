@@ -1,21 +1,23 @@
 import { AnimatedSection, Badge } from '@repo/ui'
 import { m } from '@/paraglide/messages'
 
+const DIAGRAMS = import.meta.env.VITE_DIAGRAMS_URL ?? 'http://localhost:8080'
+
 const SEEDING_EXAMPLES = [
   {
     src: '/slides/solo-builder/logo-forge-v01.png',
     label: 'Logo Forge v0.1',
-    href: 'http://localhost:8080/lyra/brand/lyra-logo-forge.html',
+    href: `${DIAGRAMS}/lyra/brand/lyra-logo-forge.html`,
   },
   {
     src: '/slides/solo-builder/logo-forge-v02.png',
     label: 'Logo Forge v0.2',
-    href: 'http://localhost:8080/lyra/brand/lyra-logo-forge-v0.2.html',
+    href: `${DIAGRAMS}/lyra/brand/lyra-logo-forge-v0.2.html`,
   },
   {
     src: '/slides/solo-builder/logo-forge-v022.png',
     label: 'Logo Forge v0.2.2',
-    href: 'http://localhost:8080/lyra/brand/lyra-logo-forge-v0.2.2.html',
+    href: `${DIAGRAMS}/lyra/brand/lyra-logo-forge-v0.2.2.html`,
   },
 ]
 
