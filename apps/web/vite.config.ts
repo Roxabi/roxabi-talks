@@ -15,9 +15,7 @@ async function getPlugins() {
       strategy: ['cookie', 'preferredLanguage', 'baseLocale'],
     }),
     nitro({
-      config: {
-        preset: process.env.NITRO_PRESET,
-      },
+      preset: process.env.NITRO_PRESET,
     }),
     viteTsConfigPaths({
       projects: [
