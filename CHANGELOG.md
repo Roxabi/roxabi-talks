@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 Entries are generated automatically by `/promote` and committed to staging before the promotion PR.
 
+## [v1.0.1] - 2026-03-27
+
+### Fixed
+- fix(vite): restore `ssr.external` for Remotion — Vite 8 changed SSR externalization defaults; without it, Nitro's internal Rolldown fails to parse Remotion's ESM bundle at build time (PARSE_ERROR)
+- fix(vite): scope `conditions: ['source']` to dev only — prevents Rolldown from bundling Remotion into the SSR function and crashing it at startup (Vercel 508 INFINITE_LOOP_DETECTED)
+- fix(ci): use merge commit instead of squash in auto-merge workflow to prevent staging/main history divergence
+- feat(solo-builder): replace all hardcoded `localhost:8080` diagram links with `VITE_DIAGRAMS_URL` env var (`https://diagrams.roxabi.com` in production)
+
 ## [v1.0.0] - 2026-03-27
 
 ### Added
