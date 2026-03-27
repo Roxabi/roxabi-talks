@@ -1,6 +1,8 @@
 import { AnimatedSection } from '@repo/ui'
 import { m } from '@/paraglide/messages'
 
+const DIAGRAMS = import.meta.env.VITE_DIAGRAMS_URL ?? 'http://localhost:8080'
+
 export function HiddenVisualsGallerySection() {
   return (
     <div className="relative mx-auto w-full max-w-5xl">
@@ -16,7 +18,7 @@ export function HiddenVisualsGallerySection() {
 
         <AnimatedSection>
           <a
-            href="http://localhost:8080"
+            href={DIAGRAMS}
             target="_blank"
             rel="noopener noreferrer"
             className="block rounded-lg border border-[var(--sb-accent)]/30 overflow-hidden hover:border-[var(--sb-accent)]/60 transition-colors group"
@@ -28,7 +30,7 @@ export function HiddenVisualsGallerySection() {
               loading="lazy"
             />
             <div className="flex items-center justify-between px-4 py-2 bg-[var(--sb-surface)]">
-              <span className="font-mono text-[10px] text-[var(--sb-dim)]">localhost:8080</span>
+              <span className="font-mono text-[10px] text-[var(--sb-dim)]">{new URL(DIAGRAMS).host}</span>
               <span className="font-mono text-[10px] text-[var(--sb-accent)]">
                 {m.talk_sb_hidden_visuals_open()} ↗
               </span>

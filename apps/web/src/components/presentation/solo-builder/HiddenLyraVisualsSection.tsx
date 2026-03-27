@@ -1,26 +1,28 @@
 import { AnimatedSection } from '@repo/ui'
 import { m } from '@/paraglide/messages'
 
+const DIAGRAMS = import.meta.env.VITE_DIAGRAMS_URL ?? 'http://localhost:8080'
+
 const VISUALS = [
   {
     src: '/slides/solo-builder/lyra-ux-telegram.png',
     label: 'UX Telegram',
-    href: 'http://localhost:8080/lyra/visuals/lyra-ux-telegram.html',
+    href: `${DIAGRAMS}/lyra/visuals/lyra-ux-telegram.html`,
   },
   {
     src: '/slides/solo-builder/lyra-stream-ux.png',
     label: 'Stream UX',
-    href: 'http://localhost:8080/lyra/visuals/lyra-stream-ux.html',
+    href: `${DIAGRAMS}/lyra/visuals/lyra-stream-ux.html`,
   },
   {
     src: '/slides/solo-builder/lyra-arch-gap.png',
     label: 'Architecture gap',
-    href: 'http://localhost:8080/lyra/visuals/lyra-arch-gap.html',
+    href: `${DIAGRAMS}/lyra/visuals/lyra-arch-gap.html`,
   },
   {
     src: '/slides/solo-builder/lyra-persistence-arch.png',
     label: 'Persistence arch',
-    href: 'http://localhost:8080/lyra/visuals/lyra-persistence-arch.html#db',
+    href: `${DIAGRAMS}/lyra/visuals/lyra-persistence-arch.html#db`,
   },
 ]
 

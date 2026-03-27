@@ -43,6 +43,12 @@ const config = defineConfig(async ({ command }) => ({
     ? { conditions: ['source'] }
     : { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: await getPlugins(),
+  ssr: {
+    // Remotion is client-only. Vite 8 changed SSR externalization defaults vs 7.x —
+    // without this, Remotion's ESM bundle gets included in the SSR service output and
+    // Nitro's internal Rolldown fails to parse it at build time.
+    external: ['remotion', '@remotion/player', '@remotion/media-utils'],
+  },
 }))
 
 export default config

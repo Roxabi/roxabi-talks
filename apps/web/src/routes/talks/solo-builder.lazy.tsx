@@ -37,6 +37,8 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { useSectionTracking } from '@/hooks/useSectionTracking'
 import { m } from '@/paraglide/messages'
 
+const DIAGRAMS = import.meta.env.VITE_DIAGRAMS_URL ?? 'http://localhost:8080'
+
 export const Route = createLazyFileRoute('/talks/solo-builder')({
   component: SoloBuilderPresentation,
 })
@@ -84,7 +86,7 @@ const slideHints: Record<string, HintLink[]> = {
   visuals: [
     { label: 'Diagram gallery', href: '#hidden-visuals-gallery' },
     { label: 'Lyra visual explainers', href: '#hidden-lyra-visuals' },
-    { label: 'Lyra user guide (visual-explainer)', href: 'http://localhost:8080/lyra/finals/lyra-user-guide-v14.html' },
+    { label: 'Lyra user guide (visual-explainer)', href: `${DIAGRAMS}/lyra/visuals/lyra-user-guide-v14.html` },
   ],
   recon: [
     { label: 'Claw family comparisons', href: '#hidden-claw' },
