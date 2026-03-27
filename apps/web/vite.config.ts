@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
@@ -15,7 +16,6 @@ async function getPlugins() {
     }),
     nitro({
       config: {
-        builder: 'rolldown',
         preset: process.env.NITRO_PRESET,
       },
     }),
@@ -31,16 +31,18 @@ async function getPlugins() {
   ] as PluginOption[]
 }
 
-const config = defineConfig(async () => ({
+const config = defineConfig(async ({ command }) => ({
   build: { chunkSizeWarningLimit: 1000 },
   server: { port: 3000 },
-  resolve: { conditions: ['source'] },
+  // In dev, resolve @repo/ui from TypeScript source so no pre-build is needed.
+  // In build, the dist is already built by `bun run --cwd packages/ui build`.
+  // WARNING: conditions: ['source'] must NOT be used in build — Rolldown (Nitro builder)
+  // does not respect ssr.external when resolving source files, causing Remotion to be
+  // bundled into the SSR function and crashing it at runtime (Vercel 508).
+  resolve: command === 'serve'
+    ? { conditions: ['source'] }
+    : { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: await getPlugins(),
-  ssr: {
-    // Remotion is client-only — exclude from SSR bundle to avoid parse errors
-    noExternal: [],
-    external: ['remotion', '@remotion/player', '@remotion/media-utils'],
-  },
 }))
 
 export default config
