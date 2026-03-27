@@ -3,6 +3,7 @@
 @import '@fontsource-variable/plus-jakarta-sans';
 @import '@fontsource-variable/bricolage-grotesque';
 @import '@fontsource/press-start-2p';
+@import '@fontsource/chakra-petch/700.css';
 
 @source "../node_modules/@repo/ui/src";
 
@@ -280,6 +281,75 @@ html.dark .shiki span {
   [data-presentation] .animate-pulse {
     animation: none !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════
+   SOLO BUILDER MODE — Forge brand palette (light + dark)
+   Scoped to [data-presentation][data-mode="solo-builder"]
+   ══════════════════════════════════════════════════════ */
+
+[data-mode="solo-builder"] {
+  /* Dark (default) — Forge palette */
+  --sb-bg:      #0a0a0f;
+  --sb-surface: #18181f;
+  --sb-surface2:#1f2937;
+  --sb-border:  #2a2a35;
+  --sb-text:    #fafafa;
+  --sb-dim:     #6b7280;
+  --sb-accent:  #e85d04;
+  --sb-ember:   #f97316;
+  --sb-teal:    #06b6d4;
+  --sb-green:   #10b981;
+  --sb-red:     #f87171;
+  --sb-amber:   #f59e0b;
+  --sb-glow:    rgba(232,93,4,0.08);
+}
+
+:root:not(.dark) [data-mode="solo-builder"] {
+  /* Light — Forge adapted for readability */
+  --sb-bg:      #fafaf9;
+  --sb-surface: #ffffff;
+  --sb-surface2:#f1f0ec;
+  --sb-border:  #e9e8e2;
+  --sb-text:    #1c1917;
+  --sb-dim:     #57534e;
+  --sb-accent:  #c2410c;
+  --sb-ember:   #e85d04;
+  --sb-teal:    #0891b2;
+  --sb-green:   #059669;
+  --sb-red:     #dc2626;
+  --sb-amber:   #d97706;
+  --sb-glow:    rgba(194,65,12,0.06);
+}
+
+/* Solo Builder heading font — Chakra Petch for hero title, Outfit for section headings */
+[data-presentation][data-mode="solo-builder"] h1.sb-title {
+  font-family: 'Chakra Petch', system-ui, sans-serif;
+  font-weight: 700;
+}
+[data-presentation][data-mode="solo-builder"] h2 {
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+/* Progress bar + nav dots — Forge Orange */
+[data-mode="solo-builder"] .bg-primary {
+  background-color: var(--sb-accent);
+}
+[data-mode="solo-builder"] .border-primary {
+  border-color: var(--sb-accent);
+}
+[data-mode="solo-builder"] .hover\:border-primary\/60:hover {
+  border-color: color-mix(in srgb, var(--sb-accent) 60%, transparent);
+}
+
+/* Ember glow pulse */
+@keyframes sb-ember-pulse {
+  0%, 100% { opacity: 0.06; }
+  50%      { opacity: 0.12; }
+}
+
+[data-presentation][data-mode="solo-builder"] .sb-glow-bg {
+  animation: sb-ember-pulse 4s ease-in-out infinite;
 }
 
 /* ══════════════════════════════════════════════════════

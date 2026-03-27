@@ -1,0 +1,11 @@
+# dev-core plugin configuration
+# Values here replace the old GH_PROJECT_ID / STATUS_FIELD_ID / etc. env vars.
+# 3-tier fallback: this file → process.env → gh CLI (github_repo only)
+github_repo: Roxabi/roxabi-talks
+gh_project_id: PVT_kwDOB8J6DM4BRInP
+status_field_id: PVTSSF_lADOB8J6DM4BRInPzg_DRHY
+size_field_id: PVTSSF_lADOB8J6DM4BRInPzg_DRIk
+priority_field_id: PVTSSF_lADOB8J6DM4BRInPzg_DRIo
+status_options_json: '{"Backlog":"06de06b9","Analysis":"50571004","Specs":"1c67032b","In Progress":"2caed947","Review":"c098fefc","Done":"1a68e4bf"}'
+size_options_json: '{"XS":"39a8e799","S":"888a4847","M":"ddaa8a9e","L":"f3b7d608","XL":"a7fb2364"}'
+priority_options_json: '{"P0 - Urgent":"98b6752f","P1 - High":"1e19186d","P2 - Medium":"c61f9510","P3 - Low":"5de976ed"}'

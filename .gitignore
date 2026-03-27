@@ -2,6 +2,7 @@ node_modules/
 dist/
 .output/
 .vercel/
+apps/web/.nitro/
 *.local
 .env*
 !.env.example

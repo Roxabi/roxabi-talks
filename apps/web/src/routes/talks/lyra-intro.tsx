@@ -1,0 +1,26 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { z } from 'zod'
+import {
+  AVATAR_POSITIONS,
+  AVATAR_SIZES,
+  AVATAR_VARIANTS,
+  type AvatarPosition,
+  type AvatarVariant,
+} from '@/components/presentation/lyra-story/lyra.constants'
+
+export { AVATAR_VARIANTS, AVATAR_POSITIONS, AVATAR_SIZES, type AvatarVariant, type AvatarPosition }
+
+export const searchSchema = z.object({
+  avatar: z.enum(AVATAR_VARIANTS).optional().default('quantum'),
+  avatarSize: z.coerce
+    .number()
+    .refine((n) => (AVATAR_SIZES as readonly number[]).includes(n))
+    .catch(200)
+    .optional()
+    .default(200),
+  avatarPos: z.enum(AVATAR_POSITIONS).optional().default('bottom-left'),
+})
+
+export const Route = createFileRoute('/talks/lyra-intro')({
+  validateSearch: searchSchema,
+})
