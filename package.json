@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "@fontsource/chakra-petch": "^5.2.7",
-    "vercel": "^50.37.1"
+    "vercel": "^53.1.0"
   }
 }
