@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@fontsource/chakra-petch": "^5.2.7",
-    "vercel": "^50.37.1"
+    "vercel": "^54.5.0"
   },
   "license": "AGPL-3.0",
   "version": "0.1.0"
