@@ -17,3 +17,5 @@ apps/web/src/paraglide/
 .env
 reports/
 .vercel
+# CocoIndex Code (ccc)
+/.cocoindex_code/
