@@ -1,5 +1,6 @@
 import { AnimatedSection, Badge, Card, CardContent, cn } from '@repo/ui'
-import { Brain, Github, Twitter, Youtube } from 'lucide-react'
+import { Brain } from 'lucide-react'
+import { Github, Twitter, Youtube } from './BrandIcons'
 import type { ReactNode } from 'react'
 import { m } from '@/paraglide/messages'
 import { useLyraMode } from './LyraModeContext'
