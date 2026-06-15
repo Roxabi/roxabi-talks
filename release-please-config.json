@@ -1,6 +1,10 @@
 {
   "release-type": "node",
   "packages": {
-    ".": {}
+    ".": {
+      "component": "roxabi-talks",
+      "package-name": "roxabi-talks",
+      "tag-separator": "/"
+    }
   }
 }
