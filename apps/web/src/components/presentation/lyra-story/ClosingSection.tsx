@@ -1,6 +1,7 @@
 import { AnimatedSection, Badge } from '@repo/ui'
 import { Link } from '@tanstack/react-router'
-import { ArrowLeft, Bot, Github, Users } from 'lucide-react'
+import { ArrowLeft, Bot, Users } from 'lucide-react'
+import { Github } from './BrandIcons'
 import { m } from '@/paraglide/messages'
 import { useLyraMode } from './LyraModeContext'
 import { QuantumOrbital } from './QuantumOrbital'

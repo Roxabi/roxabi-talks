@@ -13,8 +13,9 @@ test-results/
 apps/web/src/routeTree.gen.ts
 *.tsbuildinfo
 apps/web/src/paraglide/
-.claude/stack.yml
 
 .env
 reports/
 .vercel
+# CocoIndex Code (ccc)
+/.cocoindex_code/
